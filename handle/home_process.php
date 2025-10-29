@@ -15,12 +15,13 @@ if (!$user_id) {
 // Tạo kết nối
 $conn = getDBConnection();
 
-// ĐỊNH NGHĨA HÀM
+// ĐỊNH NGHĨA HÀM TỔNG HỢP
 function getDataFinance($conn, $user_id) {
     $total_income = getTotalIncome($conn, $user_id);
     $total_expense = getTotalExpense($conn, $user_id);
     $current_balance = $total_income - $total_expense;
     $recent_transactions = getRecentTransactions($conn, $user_id, 5);
+    $category_budgets = getCategoryBudgets($conn, $user_id);
 
     // Tính phần trăm chi tiêu so với thu nhập
     if ($total_income > 0) {
@@ -44,12 +45,17 @@ function getDataFinance($conn, $user_id) {
         'current_balance' => $current_balance,
         'recent_transactions' => $recent_transactions,
         'budget_percentage' => $budget_percentage,
-        'progress_class' => $progress_class
+        'progress_class' => $progress_class,
+        'category_budgets' => $category_budgets
     ];
 }
 
+// GỌI HÀM VÀ EXTRACT DỮ LIỆU
 $finance_data = getDataFinance($conn, $user_id);
 
-// extract để view được truy cập các biến luôn
+// Đóng kết nối
+mysqli_close($conn);
+
+// Extract dữ liệu để view truy cập được các biến
 extract($finance_data);
 ?>

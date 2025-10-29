@@ -1,6 +1,7 @@
 <?php
 // Bắt đầu session và kiểm tra đăng nhập
-session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require_once '../handle/home_process.php';
 if (!isset($_SESSION['user_id'])) {
     // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
@@ -129,6 +130,7 @@ $login_time = $_SESSION['login_time'];
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
         }
 
         .transaction-item {
@@ -192,6 +194,7 @@ $login_time = $_SESSION['login_time'];
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
         }
 
         .action-btn {
@@ -347,24 +350,8 @@ $login_time = $_SESSION['login_time'];
                 </div>
 
                 <div class="row">
-                    <!-- Chart -->
+                    <!-- Recent Transactions -->
                     <div class="col-lg-8">
-                        <div class="chart-container">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h4>Thống kê chi tiêu</h4>
-                                <div>
-                                    <button class="btn btn-outline-secondary btn-sm active">Tháng</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Quý</button>
-                                    <button class="btn btn-outline-secondary btn-sm">Năm</button>
-                                </div>
-                            </div>
-                            <div class="text-center py-5">
-                                <i class="fas fa-chart-bar fa-3x text-muted"></i>
-                                <p class="mt-3 text-muted">Biểu đồ thống kê sẽ hiển thị ở đây</p>
-                            </div>
-                        </div>
-
-                        <!-- Recent Transactions -->
                         <div class="recent-transactions">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4>Giao dịch gần đây</h4>
@@ -372,70 +359,46 @@ $login_time = $_SESSION['login_time'];
                             </div>
 
                             <div class="transaction-list">
-                                <div class="transaction-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon expense">
-                                            <i class="fas fa-utensils"></i>
+                                <?php if (!empty($recent_transactions)): ?>
+                                    <?php foreach ($recent_transactions as $transaction): ?>
+                                        <?php
+                                        $is_income = $transaction['type'] === 'income';
+                                        $icon_class = $is_income ? 'income' : 'expense';
+                                        $amount_class = $is_income ? 'income' : 'expense';
+                                        $amount_sign = $is_income ? '+' : '-';
+                                        $default_icon = $is_income ? 'fa-money-bill-wave' : 'fa-shopping-cart';
+                                        ?>
+                                        <div class="transaction-item">
+                                            <div class="d-flex align-items-center">
+                                                <div class="transaction-icon <?= $icon_class ?>">
+                                                    <i class="fas <?= $transaction['icon'] ?? $default_icon ?>"></i>
+                                                </div>
+                                                <div class="transaction-details">
+                                                    <div class="transaction-title">
+                                                        <?= htmlspecialchars($transaction['description'] ?? $transaction['category_name']) ?>
+                                                    </div>
+                                                    <div class="transaction-category">
+                                                        <?= htmlspecialchars($transaction['category_name']) ?>
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        <?= date('d/m/Y', strtotime($transaction['transaction_date'])) ?>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="transaction-amount <?= $amount_class ?>">
+                                                <?= $amount_sign ?> <?= number_format($transaction['amount'], 0, ',', '.') ?> ₫
+                                            </div>
                                         </div>
-                                        <div class="transaction-details">
-                                            <div class="transaction-title">Ăn tối nhà hàng</div>
-                                            <div class="transaction-category">Ăn uống</div>
-                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted mb-3">Chưa có giao dịch nào</p>
+                                        <a href="#" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus me-1"></i> Thêm giao dịch đầu tiên
+                                        </a>
                                     </div>
-                                    <div class="transaction-amount expense">- 450.000 ₫</div>
-                                </div>
-
-                                <div class="transaction-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon income">
-                                            <i class="fas fa-money-bill-wave"></i>
-                                        </div>
-                                        <div class="transaction-details">
-                                            <div class="transaction-title">Lương tháng 11</div>
-                                            <div class="transaction-category">Thu nhập</div>
-                                        </div>
-                                    </div>
-                                    <div class="transaction-amount income">+ 12.000.000 ₫</div>
-                                </div>
-
-                                <div class="transaction-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon expense">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </div>
-                                        <div class="transaction-details">
-                                            <div class="transaction-title">Mua sắm Tiki</div>
-                                            <div class="transaction-category">Mua sắm</div>
-                                        </div>
-                                    </div>
-                                    <div class="transaction-amount expense">- 1.250.000 ₫</div>
-                                </div>
-
-                                <div class="transaction-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon expense">
-                                            <i class="fas fa-gas-pump"></i>
-                                        </div>
-                                        <div class="transaction-details">
-                                            <div class="transaction-title">Đổ xăng</div>
-                                            <div class="transaction-category">Di chuyển</div>
-                                        </div>
-                                    </div>
-                                    <div class="transaction-amount expense">- 300.000 ₫</div>
-                                </div>
-
-                                <div class="transaction-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="transaction-icon income">
-                                            <i class="fas fa-gift"></i>
-                                        </div>
-                                        <div class="transaction-details">
-                                            <div class="transaction-title">Tiền thưởng</div>
-                                            <div class="transaction-category">Thu nhập</div>
-                                        </div>
-                                    </div>
-                                    <div class="transaction-amount income">+ 450.000 ₫</div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -443,7 +406,7 @@ $login_time = $_SESSION['login_time'];
                     <!-- Quick Actions & Budget -->
                     <div class="col-lg-4">
                         <!-- Quick Actions -->
-                        <div class="quick-actions mb-4">
+                        <div class="quick-actions">
                             <h4 class="mb-4">Thao tác nhanh</h4>
                             <div class="row g-3">
                                 <div class="col-6">
@@ -475,47 +438,52 @@ $login_time = $_SESSION['login_time'];
 
                         <!-- Budget Progress -->
                         <div class="chart-container">
-                            <h4 class="mb-4">Ngân sách tháng</h4>
+                            <h4 class="mb-4">Ngân sách tháng <?= date('m/Y') ?></h4>
 
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Ăn uống</span>
-                                    <span>1.2/2.0 tr</span>
+                            <?php if (!empty($category_budgets)): ?>
+                                <?php foreach ($category_budgets as $budget): ?>
+                                    <?php
+                                    $budget_amount = $budget['budget_amount'] ?? 0;
+                                    $spent_amount = $budget['spent_amount'] ?? 0;
+                                    if ($budget_amount > 0) {
+                                        $percentage = ($spent_amount / $budget_amount) * 100;
+                                    } else {
+                                        $percentage = 0;
+                                    }
+                                    if ($percentage <= 60) {
+                                        $progress_class = 'bg-success';
+                                    } elseif ($percentage <= 80) {
+                                        $progress_class = 'bg-warning';
+                                    } else {
+                                        $progress_class = 'bg-danger';
+                                    }
+                                    ?>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>
+                                                <i class="<?= $budget['icon'] ?? 'fas fa-tag' ?> me-2"
+                                                    style="color: <?= $budget['color'] ?? '#4361ee' ?>"></i>
+                                                <?= htmlspecialchars($budget['category_name']) ?>
+                                            </span>
+                                            <span>
+                                                <?= number_format($spent_amount, 0, ',', '.') ?> ₫ /
+                                                <?= number_format($budget_amount, 0, ',', '.') ?> ₫
+                                            </span>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 10px;">
+                                            <div class="progress-bar <?= $progress_class ?>" role="progressbar"
+                                                style="width: <?= min($percentage, 100) ?>%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center py-4">
+                                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Chưa có ngân sách nào</p>
+                                    <a href="#" class="btn btn-primary btn-sm">Thiết lập ngân sách</a>
                                 </div>
-                                <div class="progress mb-3" style="height: 10px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 60%"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Di chuyển</span>
-                                    <span>0.8/1.0 tr</span>
-                                </div>
-                                <div class="progress mb-3" style="height: 10px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 80%"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Giải trí</span>
-                                    <span>0.9/1.0 tr</span>
-                                </div>
-                                <div class="progress mb-3" style="height: 10px;">
-                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 90%"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Mua sắm</span>
-                                    <span>1.5/2.0 tr</span>
-                                </div>
-                                <div class="progress mb-3" style="height: 10px;">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: 75%"></div>
-                                </div>
-                            </div>
+                            <?php endif; ?>
 
                             <button class="btn btn-outline-primary w-100">Quản lý ngân sách</button>
                         </div>
