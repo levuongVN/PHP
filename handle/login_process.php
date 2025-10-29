@@ -14,7 +14,7 @@ $password = $_POST['password'];
 // Validate dữ liệu
 if (empty($username) || empty($password)) {
     $_SESSION['error'] = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
-    header('Location: ../Index.php');
+    header(header: 'Location: ../Index.php');
     exit();
 }
 
