@@ -32,7 +32,7 @@ if ($user) {
     $_SESSION['login_time'] = date('Y-m-d H:i:s');
 
     // Chuyển hướng đến trang chủ
-    header('Location: ../views/Index.php');
+    header('Location: ../views/Home.php');
     exit();
 } else {
     // Đăng nhập thất bại

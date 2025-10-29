@@ -252,22 +252,7 @@ $login_time = $_SESSION['login_time'];
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <div class="logo">
-                    <h3><i class="fas fa-wallet"></i> MoneyMaster</h3>
-                </div>
-                <nav class="nav flex-column mt-4">
-                    <a class="nav-link active" href="#"><i class="fas fa-home"></i> Trang chủ</a>
-                    <a class="nav-link" href="#"><i class="fas fa-exchange-alt"></i> Giao dịch</a>
-                    <a class="nav-link" href="#"><i class="fas fa-chart-pie"></i> Thống kê</a>
-                    <a class="nav-link" href="#"><i class="fas fa-tags"></i> Danh mục</a>
-                    <a class="nav-link" href="#"><i class="fas fa-chart-line"></i> Ngân sách</a>
-                    <a class="nav-link" href="#"><i class="fas fa-bell"></i> Nhắc nhở</a>
-                    <a class="nav-link" href="#"><i class="fas fa-cog"></i> Cài đặt</a>
-                </nav>
-            </div>
-
+            <?php include 'sideBar.php' ?>
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Header -->
