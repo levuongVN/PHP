@@ -1,4 +1,6 @@
 <?php
+require_once '../functions/auth.php';
+require_once '../functions/dbConnect.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -55,6 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($errors)) {
         // Thông báo thành công
+
+        $pdo = getDBConnection();
+        $result = registerUser($pdo, $username, $email, $password, $full_name);
         $_SESSION['success'] = "Đăng ký thành công! Vui lòng đăng nhập.";
         header('Location: ../login.php');
         exit();

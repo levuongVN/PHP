@@ -84,7 +84,7 @@ if (isset($_SESSION['error'])) {
                     </div>
                     
                     <div class="login-form">
-                        <form action="process_login.php" method="POST" onsubmit="return validateLoginForm()">
+                        <form action="./handle/login_process.php" method="POST" onsubmit="return validateLoginForm()">
                             <!-- Username/Email Field -->
                             <div class="mb-4">
                                 <label for="username" class="form-label fw-semibold">Tên đăng nhập hoặc Email:</label>
