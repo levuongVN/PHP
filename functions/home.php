@@ -78,7 +78,7 @@ function getRecentTransactions($conn, $user_id, $limit = 5) {
  */
 function getCategoryBudgets($conn, $user_id) {
     try {
-        $current_month = date('Y-m');
+        $current_month = date(format: 'Y-m');
         
         $sql = "
                 SELECT 
@@ -112,5 +112,65 @@ function getCategoryBudgets($conn, $user_id) {
         error_log("Error getting category budgets: " . $e->getMessage());
         return [];
     }
+}
+function getTotalIncomeByMonth($conn, $user_id, $month) {
+    try {
+    $sql = "SELECT COALESCE(SUM(amount), 0) as total_income 
+    FROM transactions 
+    WHERE user_id = ?
+    AND type = 'income'
+    AND DATE_FORMAT(transaction_date, '%Y-%m') = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "is", $user_id, $month);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        
+        mysqli_stmt_close($stmt);
+        return (float)$row['total_income'];
+    }}catch (Exception $e) {
+        error_log(''. $e->getMessage());
+    }
+    
+    return 0;
+}
+
+function getTotalExpenseByMonth($conn, $user_id, $month) {
+    $current_month = date(format: 'Y-m');
+    $sql = "SELECT COALESCE(SUM(amount), 0) as total_expense 
+            FROM transactions 
+            WHERE user_id = ? 
+            AND type = 'expense'
+            AND DATE_FORMAT(transaction_date, '%Y-%m') = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "is", $user_id, $month);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        
+        mysqli_stmt_close($stmt);
+        return (float)$row['total_expense'];
+    }
+    
+    return 0;
+}
+
+function getIncomeChangePercent($conn, $user_id) {
+    $current_month = date('Y-m');
+    $previous_month = date('Y-m', strtotime('-1 month'));
+    
+    $current_income = getTotalIncomeByMonth($conn, $user_id, $current_month);
+    $previous_income = getTotalIncomeByMonth($conn, $user_id, $previous_month);
+    
+    if ($previous_income == 0) {
+        return $current_income > 0 ? 100 : 0;
+    }
+    
+    $change_percent = (($current_income - $previous_income) / $previous_income) * 100;
+    return round($change_percent, 1);
 }
 ?>

@@ -1,3 +1,15 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require_once '../../handle/home_process.php';
+require_once '../../handle/statistic_process.php';
+
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+$email = $_SESSION['email'];
+$full_name = $_SESSION['full_name'];
+$login_time = $_SESSION['login_time'];
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -183,6 +195,93 @@
             padding: 10px 0;
         }
 
+        .top-categories-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            height: 100%;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .category-details {
+            flex-grow: 1;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .category-amount {
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .category-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            margin: 0 10px;
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .category-percentage {
+            color: #6c757d;
+            font-weight: 500;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .budget-info {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 min-height: auto;
@@ -197,7 +296,7 @@
 </head>
 
 <body>
-    <?php include '../sideBar.php' ?>
+    <?php include '../sideBar.php'; ?>
     <div class="container-fluid">
         <div class="row">
             <!-- Main Content -->
@@ -209,22 +308,12 @@
                         <p class="text-muted mb-0">Phân tích chi tiêu và thu nhập của bạn</p>
                     </div>
                     <div class="d-flex align-items-center">
-                        <div class="dropdown me-3">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-calendar me-2"></i>Tháng 11/2023
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Tháng 10/2023</a></li>
-                                <li><a class="dropdown-item" href="#">Tháng 9/2023</a></li>
-                                <li><a class="dropdown-item" href="#">Tháng 8/2023</a></li>
-                            </ul>
-                        </div>
                         <div class="dropdown">
                             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
                                 data-bs-toggle="dropdown">
-                                <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=4361ee&color=fff"
+                                <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
                                     class="user-avatar me-2">
-                                <span>Nguyễn Văn A</span>
+                                <span><?php echo htmlspecialchars($full_name); ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
@@ -232,93 +321,81 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
+                                <li><a class="dropdown-item" href="../../handle/logout_process.php"><i
+                                            class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Filter Section -->
-                <div class="filter-card">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Loại giao dịch</label>
-                            <select class="form-select">
-                                <option selected>Tất cả</option>
-                                <option>Thu nhập</option>
-                                <option>Chi tiêu</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Danh mục</label>
-                            <select class="form-select">
-                                <option selected>Tất cả danh mục</option>
-                                <option>Ăn uống</option>
-                                <option>Mua sắm</option>
-                                <option>Di chuyển</option>
-                                <option>Giải trí</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Từ ngày</label>
-                            <input type="date" class="form-control" value="2023-11-01">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Đến ngày</label>
-                            <input type="date" class="form-control" value="2023-11-30">
-                        </div>
-                    </div>
-                    <div class="mt-3 text-end">
-                        <button class="btn btn-primary"><i class="fas fa-filter me-2"></i>Áp dụng bộ lọc</button>
-                        <button class="btn btn-outline-secondary ms-2"><i class="fas fa-redo me-2"></i>Đặt lại</button>
-                    </div>
-                </div>
-
-                <!-- Stats Cards -->
+                <!-- Stats Cards (giữ nguyên) -->
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stats-card income">
-                            <div class="stats-number text-success">15.000.000 ₫</div>
-                            <div class="stats-title">Tổng thu nhập</div>
+                            <div class="stats-number text-success"><?= number_format($current_income, 0, ',', '.') ?> ₫
+                            </div>
+                            <div class="stats-title">Tổng thu nhập tháng này</div>
                             <div class="mt-2">
-                                <span class="text-success"><i class="fas fa-arrow-up"></i> 12.5%</span>
+                                <?php if ($income_change_percent >= 0): ?>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $income_change_percent ?>%</span>
+                                <?php else: ?>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($income_change_percent) ?>%</span>
+                                <?php endif; ?>
                                 <span class="text-muted"> so với tháng trước</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stats-card expense">
-                            <div class="stats-number text-danger">10.250.000 ₫</div>
-                            <div class="stats-title">Tổng chi tiêu</div>
+                            <div class="stats-number text-danger"><?= number_format($current_expense, 0, ',', '.') ?> ₫
+                            </div>
+                            <div class="stats-title">Tổng chi tiêu tháng này</div>
                             <div class="mt-2">
-                                <span class="text-danger"><i class="fas fa-arrow-up"></i> 8.3%</span>
+                                <?php if ($expense_change_percent >= 0): ?>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $expense_change_percent ?>%</span>
+                                <?php else: ?>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($expense_change_percent) ?>%</span>
+                                <?php endif; ?>
                                 <span class="text-muted"> so với tháng trước</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stats-card balance">
-                            <div class="stats-number text-warning">4.750.000 ₫</div>
-                            <div class="stats-title">Số dư cuối kỳ</div>
+                            <div class="stats-number text-warning"><?= number_format($current_balance, 0, ',', '.') ?> ₫
+                            </div>
+                            <div class="stats-title">Số dư hiện tại</div>
                             <div class="mt-2">
-                                <span class="text-success"><i class="fas fa-arrow-up"></i> 4.2%</span>
+                                <?php if ($balance_change_percent >= 0): ?>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $balance_change_percent ?>%</span>
+                                <?php else: ?>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($balance_change_percent) ?>%</span>
+                                <?php endif; ?>
                                 <span class="text-muted"> so với tháng trước</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="stats-card info">
-                            <div class="stats-number text-info">68%</div>
-                            <div class="stats-title">Tỷ lệ chi/ngân sách</div>
+                        <div class="stats-card">
+                            <div class="stats-number"><?= number_format($budget_percentage, 0) ?>%</div>
+                            <div class="stats-title">Tỷ lệ chi</div>
                             <div class="progress mt-2" style="height: 8px;">
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 68%"></div>
+                                <div class="progress-bar <?= $progress_class ?>" role="progressbar"
+                                    style="width: <?= min($budget_percentage, 100) ?>%">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <!-- Left Column -->
+                    <!-- Left Column (giữ nguyên) -->
                     <div class="col-lg-8">
                         <!-- Income vs Expense Chart -->
                         <div class="chart-container">
@@ -350,99 +427,46 @@
                         </div>
                     </div>
 
-                    <!-- Right Column -->
                     <div class="col-lg-4">
                         <!-- Top Categories -->
-                        <div class="chart-container">
-                            <h4 class="mb-0">Danh mục chi tiêu nhiều nhất</h4>
-                            
-                            <div class="mb-4">
+                        <div class="top-categories-card">
+                            <h4 class="mb-4">Danh mục chi tiêu hàng đầu</h4>
+                            <?php foreach ($top_categories as $value): ?>
                                 <div class="category-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-color" style="background-color: #4361ee;"></div>
-                                        <span>Ăn uống</span>
+                                    <div class="category-icon" style="background-color: <?= $value['display_color'] ?>">
+                                        <i class="<?= $value['icon'] ?>"></i>
                                     </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold">3.250.000 ₫</div>
-                                        <small class="text-muted">32% tổng chi</small>
-                                    </div>
-                                </div>
-                                <div class="progress progress-thin mt-1">
-                                    <div class="progress-bar" role="progressbar" style="width: 32%; background-color: #4361ee;"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="category-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-color" style="background-color: #f72585;"></div>
-                                        <span>Mua sắm</span>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold">2.150.000 ₫</div>
-                                        <small class="text-muted">21% tổng chi</small>
-                                    </div>
-                                </div>
-                                <div class="progress progress-thin mt-1">
-                                    <div class="progress-bar" role="progressbar" style="width: 21%; background-color: #f72585;"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="category-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-color" style="background-color: #4cc9f0;"></div>
-                                        <span>Di chuyển</span>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold">1.850.000 ₫</div>
-                                        <small class="text-muted">18% tổng chi</small>
+                                    <div class="category-details">
+                                        <div class="category-header">
+                                            <span class="category-name"><?= $value['category_name'] ?></span>
+                                            <span
+                                                class="category-amount"><?= number_format($value['total_spent'], 0, ',', '.') ?>
+                                                ₫</span>
+                                        </div>
+                                        <div class="category-progress">
+                                            <span
+                                                class="budget-info"><?= number_format($value['total_spent'], 0, ',', '.') ?>
+                                                ₫ / <?= number_format($value['total_budget'], 0, ',', '.') ?> ₫</span>
+                                            <div class="progress-bar-container">
+                                                <?php
+                                                $percentage = $value['total_budget'] > 0 ?
+                                                    min(($value['total_spent'] / $value['total_budget']) * 100, 100) : 0;
+                                                ?>
+                                                <div class="progress-bar"
+                                                    style="width: <?= $percentage ?>%; background-color: <?= $value['display_color'] ?>">
+                                                </div>
+                                            </div>
+                                            <span class="category-percentage"><?= number_format($percentage, 0) ?>%</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="progress progress-thin mt-1">
-                                    <div class="progress-bar" role="progressbar" style="width: 18%; background-color: #4cc9f0;"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="category-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-color" style="background-color: #f8961e;"></div>
-                                        <span>Giải trí</span>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold">1.250.000 ₫</div>
-                                        <small class="text-muted">12% tổng chi</small>
-                                    </div>
-                                </div>
-                                <div class="progress progress-thin mt-1">
-                                    <div class="progress-bar" role="progressbar" style="width: 12%; background-color: #f8961e;"></div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="category-item">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-color" style="background-color: #7209b7;"></div>
-                                        <span>Khác</span>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="fw-bold">1.500.000 ₫</div>
-                                        <small class="text-muted">15% tổng chi</small>
-                                    </div>
-                                </div>
-                                <div class="progress progress-thin mt-1">
-                                    <div class="progress-bar" role="progressbar" style="width: 15%; background-color: #7209b7;"></div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
