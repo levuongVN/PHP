@@ -31,4 +31,28 @@ foreach ($top_categories as $index => &$category) {
 }
 
 
+// Hàm lấy dữ liệu cho biểu đồ so sánh thu nhập và chi tiêu
+function getChartData($conn, $user_id, $months = 6) {
+    $chart_data = [
+        'labels' => [],
+        'income' => [],
+        'expense' => []
+    ];
+    
+    for ($i = $months - 1; $i >= 0; $i--) {
+        $date = date('Y-m', strtotime("-$i months"));
+        $month_label = date('m/Y', strtotime("-$i months"));
+        
+        $income = getTotalIncomeByMonth($conn, $user_id, $date);
+        $expense = getTotalExpenseByMonth($conn, $user_id, $date);
+        
+        $chart_data['labels'][] = $month_label;
+        $chart_data['income'][] = $income;
+        $chart_data['expense'][] = $expense;
+    }
+    
+    return $chart_data;
+}
+$chart_data = getChartData($conn, $user_id, 6);
+
 ?>
