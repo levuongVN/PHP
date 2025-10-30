@@ -410,11 +410,6 @@ $login_time = $_SESSION['login_time'];
                         <div class="chart-container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4>Thu nhập vs Chi tiêu</h4>
-                                <div class="chart-controls">
-                                    <button class="btn btn-outline-primary btn-sm active" onclick="changeChartPeriod('month')">Tháng</button>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="changeChartPeriod('quarter')">Quý</button>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="changeChartPeriod('year')">Năm</button>
-                                </div>
                             </div>
                             <div class="chart-wrapper">
                                 <canvas id="incomeExpenseChart"></canvas>
@@ -567,21 +562,6 @@ $login_time = $_SESSION['login_time'];
                     }
                 }
             });
-
-            // Hàm thay đổi khoảng thời gian biểu đồ
-            function changeChartPeriod(period) {
-                // Cập nhật trạng thái nút
-                document.querySelectorAll('.chart-controls .btn').forEach(btn => {
-                    btn.classList.remove('active', 'btn-primary');
-                    btn.classList.add('btn-outline-primary');
-                });
-                event.target.classList.add('active', 'btn-primary');
-                event.target.classList.remove('btn-outline-primary');
-
-                // TODO: Gọi API để lấy dữ liệu mới theo khoảng thời gian
-                console.log('Đổi khoảng thời gian:', period);
-                // Ở đây bạn có thể gọi AJAX để lấy dữ liệu mới và cập nhật biểu đồ
-            }
         </script>
 </body>
 

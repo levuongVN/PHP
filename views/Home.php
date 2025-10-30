@@ -418,13 +418,13 @@ $login_time = $_SESSION['login_time'];
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="#" class="action-btn">
+                                    <a href="./statistic/statistic.php" class="action-btn">
                                         <i class="fas fa-chart-pie"></i>
                                         <span>Báo cáo</span>
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="#" class="action-btn">
+                                    <a href="" class="action-btn">
                                         <i class="fas fa-bell"></i>
                                         <span>Nhắc nhở</span>
                                     </a>
@@ -481,7 +481,7 @@ $login_time = $_SESSION['login_time'];
                                 </div>
                             <?php endif; ?>
 
-                            <button class="btn btn-outline-primary w-100">Quản lý ngân sách</button>
+                            <a href="./budget/budget.php" class="btn btn-outline-primary w-100">Quản lý ngân sách</a>
                         </div>
                     </div>
                 </div>
