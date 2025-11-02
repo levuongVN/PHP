@@ -76,9 +76,8 @@ function getRecentTransactions($conn, $user_id, $limit = 5) {
 /**
  * Lấy ngân sách theo danh mục cho tháng hiện tại
  */
-function getCategoryBudgets($conn, $user_id) {
+function getCategoryBudgets($conn, $user_id, $month) {
     try {
-        $current_month = date(format: 'Y-m');
         
         $sql = "
                 SELECT 
@@ -97,7 +96,7 @@ function getCategoryBudgets($conn, $user_id) {
         ";
         
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "isisi", $user_id, $current_month, $user_id, $current_month, $user_id);
+        mysqli_stmt_bind_param($stmt, "isisi", $user_id, $month, $user_id, $month, $user_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         
@@ -172,5 +171,27 @@ function getIncomeChangePercent($conn, $user_id) {
     
     $change_percent = (($current_income - $previous_income) / $previous_income) * 100;
     return round($change_percent, 1);
+}
+
+function getBalanceUntilMonth($conn, $user_id, $year_month) {
+    $sql = "SELECT 
+        COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END), 0) as total_income,
+        COALESCE(SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END), 0) as total_expense
+    FROM transactions 
+    WHERE user_id = ? AND DATE_FORMAT(transaction_date, '%Y-%m') <= ?";
+    
+    $stmt = mysqli_prepare($conn, $sql);
+    
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "is", $user_id, $year_month);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        
+        mysqli_stmt_close($stmt);
+        return $row['total_income'] - $row['total_expense'];
+    }
+    
+    return 0;
 }
 ?>

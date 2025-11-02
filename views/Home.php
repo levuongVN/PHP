@@ -287,35 +287,37 @@ $login_time = $_SESSION['login_time'];
                 </div>
 
                 <!-- Stats Cards -->
+                <!-- Stats Cards -->
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stats-card income">
-                            <div class="stats-number text-success"><?= number_format($current_income, 0, ',', '.') ?> ₫
-                            </div>
+                            <div class="stats-number text-success">
+                                <?= number_format($current_income_month, 0, ',', '.') ?> ₫</div>
                             <div class="stats-title">Tổng thu nhập tháng này</div>
                             <div class="mt-2">
                                 <?php if ($income_change_percent >= 0): ?>
-                                    <span class="text-success"><i class="fas fa-arrow-up"></i>
-                                        <?= $income_change_percent ?>%</span>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $income_change_percent ?>%</span>
                                 <?php else: ?>
-                                    <span class="text-danger"><i class="fas fa-arrow-down"></i>
-                                        <?= abs($income_change_percent) ?>%</span>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($income_change_percent) ?>%</span>
                                 <?php endif; ?>
+                                <span class="text-muted"> so với tháng trước</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stats-card expense">
-                            <div class="stats-number text-danger"><?= number_format($current_expense, 0, ',', '.') ?> ₫
-                            </div>
+                            <div class="stats-number text-danger">
+                                <?= number_format($current_expense_month, 0, ',', '.') ?> ₫</div>
                             <div class="stats-title">Tổng chi tiêu tháng này</div>
                             <div class="mt-2">
-                            <?php if ($expense_change_percent >= 0): ?>
-                                    <span class="text-success"><i class="fas fa-arrow-up"></i>
-                                        <?= $expense_change_percent ?>%</span>
+                                <?php if ($expense_change_percent >= 0): ?>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $expense_change_percent ?>%</span>
                                 <?php else: ?>
-                                    <span class="text-danger"><i class="fas fa-arrow-down"></i>
-                                        <?= abs($expense_change_percent) ?>%</span>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($expense_change_percent) ?>%</span>
                                 <?php endif; ?>
                                 <span class="text-muted"> so với tháng trước</span>
                             </div>
@@ -327,7 +329,15 @@ $login_time = $_SESSION['login_time'];
                             </div>
                             <div class="stats-title">Số dư hiện tại</div>
                             <div class="mt-2">
-                                <span class="text-success"><i class="fas fa-arrow-up"></i> 2.1%</span>
+                                <?php if (abs($balance_change_percent) < 0.1): ?>
+                                    <span class="text-muted"><i class="fas fa-minus"></i> Không đổi</span>
+                                <?php elseif ($balance_change_percent >= 0): ?>
+                                    <span class="text-success"><i
+                                            class="fas fa-arrow-up"></i><?= $balance_change_percent ?>%</span>
+                                <?php else: ?>
+                                    <span class="text-danger"><i
+                                            class="fas fa-arrow-down"></i><?= abs($balance_change_percent) ?>%</span>
+                                <?php endif; ?>
                                 <span class="text-muted"> so với tháng trước</span>
                             </div>
                         </div>

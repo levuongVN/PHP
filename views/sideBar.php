@@ -27,9 +27,6 @@ if ($current_dir == 'views') {
         <a class="nav-link <?= $current_page == 'statistic.php' ? 'active' : '' ?>" href="<?= $base_path ?>/statistic/statistic.php">
             <i class="fas fa-chart-pie"></i> Thống kê
         </a>
-        <a class="nav-link" href="#">
-            <i class="fas fa-tags"></i> Danh mục
-        </a>
         <a class="nav-link <?= $current_page == 'budget.php' ? 'active' : '' ?>" href="<?= $base_path ?>/budget/budget.php">
             <i class="fas fa-chart-line"></i> Ngân sách
         </a>

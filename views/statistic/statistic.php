@@ -139,13 +139,13 @@ $login_time = $_SESSION['login_time'];
             height: 300px;
             width: 100%;
         }
-        
+
         .chart-controls {
             display: flex;
             gap: 8px;
             margin-bottom: 15px;
         }
-        
+
         .chart-controls .btn {
             font-size: 0.8rem;
             padding: 4px 12px;
@@ -341,7 +341,8 @@ $login_time = $_SESSION['login_time'];
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stats-card income">
-                            <div class="stats-number text-success"><?= number_format($current_income, 0, ',', '.') ?> ₫
+                            <div class="stats-number text-success">
+                                <?= number_format($current_income_month, 0, ',', '.') ?> ₫
                             </div>
                             <div class="stats-title">Tổng thu nhập tháng này</div>
                             <div class="mt-2">
@@ -358,7 +359,8 @@ $login_time = $_SESSION['login_time'];
                     </div>
                     <div class="col-md-3">
                         <div class="stats-card expense">
-                            <div class="stats-number text-danger"><?= number_format($current_expense, 0, ',', '.') ?> ₫
+                            <div class="stats-number text-danger">
+                                <?= number_format($current_expense_month, 0, ',', '.') ?> ₫
                             </div>
                             <div class="stats-title">Tổng chi tiêu tháng này</div>
                             <div class="mt-2">
@@ -466,7 +468,7 @@ $login_time = $_SESSION['login_time'];
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        
+
         <script>
             // Dữ liệu từ PHP
             const chartData = <?= json_encode($chart_data) ?>;
@@ -506,7 +508,7 @@ $login_time = $_SESSION['login_time'];
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     return context.dataset.label + ': ' + context.parsed.y.toLocaleString('vi-VN') + ' ₫';
                                 }
                             }
@@ -516,7 +518,7 @@ $login_time = $_SESSION['login_time'];
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return value.toLocaleString('vi-VN') + ' ₫';
                                 }
                             }
@@ -551,7 +553,7 @@ $login_time = $_SESSION['login_time'];
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     const value = context.parsed;
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = ((value / total) * 100).toFixed(1);

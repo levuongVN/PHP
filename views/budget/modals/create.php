@@ -1,51 +1,108 @@
+<?php
+session_start();
+
+// Lấy giá trị lỗi trước khi unset
+$has_error = isset($_SESSION['error_category']) || isset($_SESSION['error_budget_amount']);
+$error_category = $_SESSION['error_category'] ?? null;
+$error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
+?>
+
 <!-- Modal thêm ngân sách -->
 <div class="modal fade" id="addBudgetModal" tabindex="-1" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 121, 199, 1) 50%, rgba(237, 221, 83, 1) 100%); color: white;">
+            <div class="modal-header"
+                style="background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 121, 199, 1) 50%, rgba(237, 221, 83, 1) 100%); color: white;">
                 <h5 class="modal-title" id="addBudgetModalLabel">Thêm ngân sách mới</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addBudgetForm">
+                <form id="addBudgetForm" method="post" action="../../handle/budget_process.php">
                     <div class="mb-3">
                         <label for="categorySelect" class="form-label">Danh mục</label>
-                        <select class="form-select" id="categorySelect" required>
-                            <option value="" selected disabled>Chọn danh mục</option>
-                            <option value="1">Nhà ở</option>
-                            <option value="2">Ăn uống</option>
-                            <option value="3">Di chuyển</option>
-                            <option value="4">Mua sắm</option>
-                            <option value="5">Sức khỏe</option>
-                            <option value="6">Giải trí</option>
-                            <option value="7">Giáo dục</option>
-                        </select>
+                        <input type="text" class="form-control" id="categories" name="category" placeholder="Nhập danh mục" 
+                               value="<?= isset($_SESSION['old_category']) ? htmlspecialchars($_SESSION['old_category']) : '' ?>" />
+                        <?php if ($error_category): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= $error_category ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="mb-3">
                         <label for="budgetAmount" class="form-label">Số tiền ngân sách</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="budgetAmount" placeholder="Nhập số tiền" required>
+                            <input type="text" class="form-control" id="budgetAmount" name="budget_amount" placeholder="Nhập số tiền"
+                                   value="<?= isset($_SESSION['old_budget_amount']) ? htmlspecialchars($_SESSION['old_budget_amount']) : '' ?>">
                             <span class="input-group-text">₫</span>
                         </div>
+                        <?php if ($error_budget_amount): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= $error_budget_amount ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="invalid-feedback" id="budgetAmountError"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="budgetPeriod" class="form-label">Thời gian</label>
-                        <select class="form-select" id="budgetPeriod" required>
-                            <option value="month" selected>Hàng tháng</option>
-                            <option value="quarter">Hàng quý</option>
-                            <option value="year">Hàng năm</option>
-                        </select>
+                        <label for="budgetDate" class="form-label">Thời gian (YYYY-MM-DD)</label>
+                        <input type="date" class="form-control" id="budgetDate" name="budget_date" pattern="\d{4}-\d{2}-\d{2}"
+                            title="Vui lòng nhập ngày theo định dạng YYYY-MM-DD">
+                        <div class="invalid-feedback" id="budgetDateError"></div>
                     </div>
-                    <div class="mb-3">
-                        <label for="budgetNote" class="form-label">Ghi chú (tùy chọn)</label>
-                        <textarea class="form-control" id="budgetNote" rows="2" placeholder="Thêm ghi chú về ngân sách này"></textarea>
+                    <div class="modal-footer" style="border-radius: 0 0 15px 15px;">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu ngân sách</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer" style="border-radius: 0 0 15px 15px;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary">Lưu ngân sách</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Định dạng số tiền với dấu phân cách hàng nghìn ngay khi đang nhập
+    document.addEventListener('DOMContentLoaded', function () {
+        const budgetAmountInput = document.getElementById('budgetAmount');
+
+        if (budgetAmountInput) {
+            function formatNumberWithCommas(value) {
+                const numbersOnly = value.replace(/\D/g, '');
+
+                if (numbersOnly) {
+                    return parseInt(numbersOnly, 10).toLocaleString('vi-VN');
+                }
+                return '';
+            }
+
+            budgetAmountInput.addEventListener('input', function (e) {
+                this.value = formatNumberWithCommas(this.value);
+            });
+        }
+
+        // Đặt ngày mặc định là ngày hiện tại
+        const budgetDateInput = document.getElementById('budgetDate');
+        if (budgetDateInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            budgetDateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // SỬA: Kiểm tra biến $has_error thay vì trực tiếp $_SESSION
+        <?php if ($has_error): ?>
+            setTimeout(function () {
+                var addBudgetModal = new bootstrap.Modal(document.getElementById('addBudgetModal'));
+                addBudgetModal.show();
+            }, 100);
+            
+            // Xóa session sau khi đã sử dụng
+            <?php
+            unset($_SESSION['error_category']);
+            unset($_SESSION['error_budget_amount']);
+            unset($_SESSION['old_category']);
+            unset($_SESSION['old_budget_amount']);
+            ?>
+        <?php endif; ?>
+    });
+</script>
