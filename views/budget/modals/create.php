@@ -1,12 +1,20 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Lấy giá trị lỗi từ session và gán cho biến cục bộ, sau đó xóa chúng khỏi session
+$has_error = false;
+$error_category = null;
+$error_budget_amount = null;
 
-// Lấy giá trị lỗi trước khi unset
-$has_error = isset($_SESSION['error_category']) || isset($_SESSION['error_budget_amount']);
-$error_category = $_SESSION['error_category'] ?? null;
-$error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
+if (isset($_SESSION['error_category']) || isset($_SESSION['error_budget_amount'])) {
+    $has_error = true;
+    $error_category = $_SESSION['error_category'] ?? null;
+    $error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
+    unset($_SESSION['error_category']);
+    unset($_SESSION['error_budget_amount']);
+}
 ?>
-
 <!-- Modal thêm ngân sách -->
 <div class="modal fade" id="addBudgetModal" tabindex="-1" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -19,10 +27,12 @@ $error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
             </div>
             <div class="modal-body">
                 <form id="addBudgetForm" method="post" action="../../handle/budget_process.php">
+                    <input type="hidden" name="action" value="create_budget">
                     <div class="mb-3">
                         <label for="categorySelect" class="form-label">Danh mục</label>
-                        <input type="text" class="form-control" id="categories" name="category" placeholder="Nhập danh mục" 
-                               value="<?= isset($_SESSION['old_category']) ? htmlspecialchars($_SESSION['old_category']) : '' ?>" />
+                        <input type="text" class="form-control" id="categories" name="category"
+                            placeholder="Nhập danh mục"
+                            value="<?= isset($_SESSION['old_category']) ? htmlspecialchars($_SESSION['old_category']) : '' ?>" />
                         <?php if ($error_category): ?>
                             <div class="alert alert-danger" role="alert">
                                 <?= $error_category ?>
@@ -30,10 +40,18 @@ $error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
                         <?php endif; ?>
                     </div>
                     <div class="mb-3">
+                        <label for="categoryType" class="form-label">Loại danh mục</label>
+                        <select class="form-select" id="categoryType" name="category_type">
+                            <option value="expense" selected>Chi tiêu</option>
+                            <option value="income">Thu nhập</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="budgetAmount" class="form-label">Số tiền ngân sách</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="budgetAmount" name="budget_amount" placeholder="Nhập số tiền"
-                                   value="<?= isset($_SESSION['old_budget_amount']) ? htmlspecialchars($_SESSION['old_budget_amount']) : '' ?>">
+                            <input type="text" class="form-control" id="budgetAmount" name="budget_amount"
+                                placeholder="Nhập số tiền"
+                                value="<?= isset($_SESSION['old_budget_amount']) ? htmlspecialchars($_SESSION['old_budget_amount']) : '' ?>">
                             <span class="input-group-text">₫</span>
                         </div>
                         <?php if ($error_budget_amount): ?>
@@ -45,8 +63,8 @@ $error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
                     </div>
                     <div class="mb-3">
                         <label for="budgetDate" class="form-label">Thời gian (YYYY-MM-DD)</label>
-                        <input type="date" class="form-control" id="budgetDate" name="budget_date" pattern="\d{4}-\d{2}-\d{2}"
-                            title="Vui lòng nhập ngày theo định dạng YYYY-MM-DD">
+                        <input type="date" class="form-control" id="budgetDate" name="budget_date"
+                            pattern="\d{4}-\d{2}-\d{2}" title="Vui lòng nhập ngày theo định dạng YYYY-MM-DD">
                         <div class="invalid-feedback" id="budgetDateError"></div>
                     </div>
                     <div class="modal-footer" style="border-radius: 0 0 15px 15px;">
@@ -89,20 +107,10 @@ $error_budget_amount = $_SESSION['error_budget_amount'] ?? null;
             budgetDateInput.value = `${yyyy}-${mm}-${dd}`;
         }
 
-        // SỬA: Kiểm tra biến $has_error thay vì trực tiếp $_SESSION
+        // Mở modal nếu có lỗi
         <?php if ($has_error): ?>
-            setTimeout(function () {
-                var addBudgetModal = new bootstrap.Modal(document.getElementById('addBudgetModal'));
-                addBudgetModal.show();
-            }, 100);
-            
-            // Xóa session sau khi đã sử dụng
-            <?php
-            unset($_SESSION['error_category']);
-            unset($_SESSION['error_budget_amount']);
-            unset($_SESSION['old_category']);
-            unset($_SESSION['old_budget_amount']);
-            ?>
+            var addBudgetModal = new bootstrap.Modal(document.getElementById('addBudgetModal'));
+            addBudgetModal.show();
         <?php endif; ?>
     });
 </script>

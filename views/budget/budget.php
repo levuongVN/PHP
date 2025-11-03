@@ -1,8 +1,8 @@
 <?php
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../../handle/budget_process.php';
-
 
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
@@ -35,39 +35,6 @@ $login_time = $_SESSION['login_time'];
         body {
             background-color: #f5f7fb;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .sidebar {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-        }
-
-        .sidebar .logo {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
         }
 
         .main-content {
@@ -252,6 +219,36 @@ $login_time = $_SESSION['login_time'];
             font-size: 0.9rem;
         }
 
+        .filter-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .budget-stats .stat-item {
+            transition: all 0.3s ease;
+        }
+
+        .budget-stats .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-group .btn.active {
+            background-color: #4361ee;
+            border-color: #4361ee;
+            color: white;
+        }
+
+        .progress-container {
+            position: relative;
+        }
+
+        .budget-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 min-height: auto;
@@ -277,8 +274,10 @@ $login_time = $_SESSION['login_time'];
     <!-- Sidebar (giả định) -->
     <div class="container-fluid">
         <div class="row">
-            <!-- Main Content -->
-            <?php include '../sideBar.php' ?>
+            <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
+                <?php include '../sideBar.php' ?>
+            </div>
+
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Header -->
                 <div class="header d-flex justify-content-between align-items-center">
@@ -390,29 +389,52 @@ $login_time = $_SESSION['login_time'];
                                     $spent_amount = $budget['spent_amount'];
                                     $remaining_amount = $budget_amount - $spent_amount;
 
-                                    // Nếu ngân sách bằng 0 thì phần trăm là 0, tránh chia cho 0
-                                    if ($budget_amount > 0) {
-                                        $percentage = min(($spent_amount / $budget_amount) * 100, 100);
+                                    // Xử lý trường hợp ngân sách = 0
+                                    if ($budget_amount == 0) {
+                                        if ($spent_amount > 0) {
+                                            // Ngân sách = 0 nhưng có chi tiêu -> Vượt ngân sách
+                                            $percentage = 100;
+                                            $progress_color = '#f72585'; // Màu đỏ
+                                            $status_text = 'Chưa đặt ngân sách';
+                                            $status_class = 'text-danger';
+                                            $status_icon = 'fa-exclamation-triangle';
+                                        } else {
+                                            // Ngân sách = 0 và không chi tiêu -> An toàn
+                                            $percentage = 0;
+                                            $progress_color = '#4cc9f0'; // Xanh nhạt
+                                            $status_text = 'Chưa đặt ngân sách';
+                                            $status_class = 'text-info';
+                                            $status_icon = 'fa-info-circle';
+                                        }
                                     } else {
-                                        $percentage = 0;
+                                        // Ngân sách > 0, tính phần trăm bình thường
+                                        $percentage = min(($spent_amount / $budget_amount) * 100, 100);
+
+                                        // Xác định màu sắc và trạng thái dựa trên phần trăm
+                                        if ($percentage <= 60) {
+                                            $progress_color = '#4cc9f0'; // Xanh nhạt
+                                            $status_text = 'An toàn';
+                                            $status_class = 'text-success';
+                                            $status_icon = 'fa-check-circle';
+                                        } elseif ($percentage <= 80) {
+                                            $progress_color = '#f8961e'; // Cam
+                                            $status_text = 'Đạt ' . round($percentage) . '%';
+                                            $status_class = 'text-warning';
+                                            $status_icon = 'fa-info-circle';
+                                        } else {
+                                            $progress_color = '#f72585'; // Hồng
+                                            $status_text = 'Vượt ' . round($percentage) . '%';
+                                            $status_class = 'text-danger';
+                                            $status_icon = 'fa-exclamation-triangle';
+                                        }
                                     }
 
-                                    // Xác định màu sắc và trạng thái dựa trên phần trăm
-                                    if ($percentage <= 60) {
-                                        $progress_color = '#4cc9f0'; // Xanh nhạt
-                                        $status_text = 'An toàn';
-                                        $status_class = 'text-success';
-                                        $status_icon = 'fa-check-circle';
-                                    } elseif ($percentage <= 80) {
-                                        $progress_color = '#f8961e'; // Cam
-                                        $status_text = 'Đạt ' . round($percentage) . '%';
-                                        $status_class = 'text-warning';
-                                        $status_icon = 'fa-info-circle';
-                                    } else {
-                                        $progress_color = '#f72585'; // Hồng
-                                        $status_text = 'Vượt ' . round($percentage) . '%';
+                                    // Kiểm tra số dư âm (quan trọng hơn phần trăm)
+                                    if ($remaining_amount < 0) {
+                                        $progress_color = '#dc3545'; // Đỏ đậm
+                                        $status_text = 'Vượt hạn mức';
                                         $status_class = 'text-danger';
-                                        $status_icon = 'fa-exclamation-triangle';
+                                        $status_icon = 'fa-times-circle';
                                     }
                                     ?>
                                     <tr>
@@ -445,12 +467,17 @@ $login_time = $_SESSION['login_time'];
                                             </div>
                                         </td>
                                         <td class="action-buttons">
-                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                                data-bs-target="#editBudgetModal">
+                                            <button class="btn btn-sm btn-outline-primary edit-budget-btn"
+                                                data-bs-toggle="modal" data-bs-target="#editBudgetModal"
+                                                data-budget-id="<?= $budget['id'] ?>"
+                                                data-category-id="<?= $budget['cate_id'] ?>"
+                                                data-value-amount="<?= number_format((float) $budget_amount, 0, ',', '.') ?>"
+                                                data-month-budget="<?= $budget['month'] ?>">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                                data-bs-target="#deleteBudgetModal">
+                                                data-bs-target="#deleteBudgetModal" data-budget-id="<?= $budget['id'] ?>"
+                                                data-cate-id="<?= $budget['cate_id'] ?>">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -478,39 +505,6 @@ $login_time = $_SESSION['login_time'];
                         </nav>
                     </div>
                 </div>
-
-                <!-- Thêm CSS cho phần lọc -->
-                <style>
-                    .filter-section {
-                        background: #f8f9fa;
-                        padding: 15px;
-                        border-radius: 10px;
-                        border: 1px solid #e9ecef;
-                    }
-
-                    .budget-stats .stat-item {
-                        transition: all 0.3s ease;
-                    }
-
-                    .budget-stats .stat-item:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    }
-
-                    .btn-group .btn.active {
-                        background-color: #4361ee;
-                        border-color: #4361ee;
-                        color: white;
-                    }
-
-                    .progress-container {
-                        position: relative;
-                    }
-
-                    .budget-table tr:hover {
-                        background-color: #f8f9fa;
-                    }
-                </style>
 
                 <!-- Thêm JavaScript xử lý lọc -->
                 <script>
@@ -578,10 +572,11 @@ $login_time = $_SESSION['login_time'];
 
     <!-- Include các modal từ file riêng -->
     <?php include 'modals/create.php'; ?>
-    <?php include 'modals/edit.php'; ?>
+    <?php
+    $categories_for_edit = $categories;
+    include 'modals/edit.php'; ?>
     <?php include 'modals/delete.php'; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Xử lý sự kiện khi modal hiển thị
         document.addEventListener('DOMContentLoaded', function () {
@@ -600,24 +595,13 @@ $login_time = $_SESSION['login_time'];
             // Thêm sự kiện cho nút xác nhận xóa
             if (deleteBudgetBtn) {
                 deleteBudgetBtn.addEventListener('click', function () {
-                    // Logic xóa ngân sách ở đây
-                    alert('Ngân sách đã được xóa!');
                     const modal = bootstrap.Modal.getInstance(document.getElementById('deleteBudgetModal'));
                     modal.hide();
                 });
             }
-
-            // Xử lý cho các nút sửa trong bảng
-            const editButtons = document.querySelectorAll('.btn-outline-primary');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Logic để điền dữ liệu vào form sửa
-                    // Ở đây bạn có thể lấy dữ liệu từ hàng tương ứng và điền vào form
-                });
-            });
         });
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

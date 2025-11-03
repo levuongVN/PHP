@@ -51,4 +51,8 @@ function logout($redirectPath = '../Index.php') {
     header('Location: ' . $redirectPath);
     exit();
 }
+
+function register($conn, $username, $email, $password, $full_name) {
+    
+}
 ?>

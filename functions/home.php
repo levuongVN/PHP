@@ -74,7 +74,7 @@ function getRecentTransactions($conn, $user_id, $limit = 5) {
     return [];
 }
 /**
- * Lấy ngân sách theo danh mục cho tháng hiện tại
+ * Lấy ngân sách theo danh mục cho tháng
  */
 function getCategoryBudgets($conn, $user_id, $month) {
     try {
@@ -84,14 +84,16 @@ function getCategoryBudgets($conn, $user_id, $month) {
                 c.name as category_name,
                 c.color,
                 c.icon,
+                b.id,
+                b.month,
+                c.id as cate_id,
                 COALESCE(b.amount, 0) as budget_amount,
                 COALESCE(SUM(t.amount), 0) as spent_amount
                 FROM categories c
                 LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ? AND DATE_FORMAT(b.month, '%Y-%m') = ?
                 LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
-                AND t.type = 'expense' 
                 AND DATE_FORMAT(t.transaction_date, '%Y-%m') = ?
-                WHERE (c.user_id = ? OR c.user_id IS NULL) AND c.type = 'expense'
+                WHERE (c.user_id = ? OR c.user_id IS NULL)
                 GROUP BY c.id, c.name, c.color, c.icon, b.amount;
         ";
         

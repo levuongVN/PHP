@@ -42,39 +42,6 @@ $login_time = $_SESSION['login_time'];
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .sidebar {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-        }
-
-        .sidebar .logo {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
         .main-content {
             margin-left: 250px;
             padding: 20px;
@@ -252,47 +219,53 @@ $login_time = $_SESSION['login_time'];
 <body>
     <div class="container-fluid">
         <div class="row">
-            <?php include 'sideBar.php' ?>
+            <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
+                <?php include 'sideBar.php' ?>
+            </div>
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Header -->
-                <div class="header d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
-                        <p class="text-muted mb-0">Hôm nay là Thứ Tư, 15 tháng 11, 2023</p>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="input-group me-3" style="width: 300px;">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                <div class="col-md-9 col-lg-10 col-xl-10 col-xxl-10 main-content">
+                    <div class="header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
+                            <p class="text-muted mb-0">Hôm nay là Thứ Tư, 15 tháng 11, 2023</p>
                         </div>
-                        <div class="dropdown">
-                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                                data-bs-toggle="dropdown">
-                                <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=4361ee&color=fff"
-                                    class="user-avatar me-2">
-                                <span><?php echo htmlspecialchars($full_name); ?></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="../handle/logout_process.php"><i
-                                            class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
-                            </ul>
+                        <div class="d-flex align-items-center">
+                            <div class="input-group me-3" style="width: 300px;">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                            </div>
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                    data-bs-toggle="dropdown">
+                                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=4361ee&color=fff"
+                                        class="user-avatar me-2">
+                                    <span><?php echo htmlspecialchars($full_name); ?></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="../handle/logout_process.php"><i
+                                                class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Stats Cards -->
-                <!-- Stats Cards -->
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stats-card income">
                             <div class="stats-number text-success">
-                                <?= number_format($current_income_month, 0, ',', '.') ?> ₫</div>
+                                <?= number_format($current_income_month, 0, ',', '.') ?> ₫
+                            </div>
                             <div class="stats-title">Tổng thu nhập tháng này</div>
                             <div class="mt-2">
                                 <?php if ($income_change_percent >= 0): ?>
@@ -309,7 +282,8 @@ $login_time = $_SESSION['login_time'];
                     <div class="col-md-3">
                         <div class="stats-card expense">
                             <div class="stats-number text-danger">
-                                <?= number_format($current_expense_month, 0, ',', '.') ?> ₫</div>
+                                <?= number_format($current_expense_month, 0, ',', '.') ?> ₫
+                            </div>
                             <div class="stats-title">Tổng chi tiêu tháng này</div>
                             <div class="mt-2">
                                 <?php if ($expense_change_percent >= 0): ?>
