@@ -225,39 +225,42 @@ $login_time = $_SESSION['login_time'];
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Header -->
-                <div class="col-md-9 col-lg-10 col-xl-10 col-xxl-10 main-content">
-                    <div class="header d-flex justify-content-between align-items-center">
-                        <div>
-                            <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
-                            <p class="text-muted mb-0">Hôm nay là Thứ Tư, 15 tháng 11, 2023</p>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <div class="input-group me-3" style="width: 300px;">
-                                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Tìm kiếm...">
-                            </div>
-                            <div class="dropdown">
-                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                                    data-bs-toggle="dropdown">
-                                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=4361ee&color=fff"
-                                        class="user-avatar me-2">
-                                    <span><?php echo htmlspecialchars($full_name); ?></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item" href="../handle/logout_process.php"><i
-                                                class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="header d-flex justify-content-start align-items-center" style="gap: 40px;">
+    <!-- Phần chào người dùng bên trái -->
+    <div class="flex-shrink-0">
+        <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
+        <p class="text-muted mb-0">
+            Hôm nay là Thứ Tư, 15 tháng 11, 2023
+        </p>
+    </div>
+
+    <!-- Phần tìm kiếm và avatar -->
+    <div class="d-flex align-items-center ms-auto">
+        <div class="input-group me-3" style="width: 300px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Tìm kiếm...">
+        </div>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                data-bs-toggle="dropdown">
+                <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
+                    class="user-avatar me-2">
+                <span><?php echo htmlspecialchars($full_name); ?></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="../handle/logout_process.php">
+                        <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Stats Cards -->
                 <div class="row">
@@ -379,7 +382,7 @@ $login_time = $_SESSION['login_time'];
                                     <div class="text-center py-5">
                                         <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
                                         <p class="text-muted mb-3">Chưa có giao dịch nào</p>
-                                        <a href="#" class="btn btn-primary btn-sm">
+                                        <a href="./transaction/transaction_create.php" class="btn btn-primary btn-sm">
                                             <i class="fas fa-plus me-1"></i> Thêm giao dịch đầu tiên
                                         </a>
                                     </div>
