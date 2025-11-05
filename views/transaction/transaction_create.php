@@ -71,7 +71,7 @@ $type = $_GET['type'] ?? 'expense';
           </a>
         </div>
 
-        <form class="card p-4 shadow-sm" method="post" action="/PHP/handle/transaction_store.php">
+        <form class="card p-4 shadow-sm" method="post" action="../../handle/transaction_store.php">
           <div class="row g-3">
             <div class="col-md-4">
               <label class="form-label">Ngày</label>

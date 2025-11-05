@@ -3,6 +3,9 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../../handle/budget_process.php';
+require_once '../../functions/auth.php';
+
+isLoggedIn();
 
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
