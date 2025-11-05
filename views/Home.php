@@ -304,7 +304,12 @@ $login_time = $_SESSION['login_time'];
                             <div class="stats-title">Số dư hiện tại</div>
                             <div class="mt-2">
                                 <?php if (abs($balance_change_percent) < 0.1): ?>
-                                    <span class="text-muted"><i class="fas fa-minus"></i> Không đổi</span>
+                                    <?php if ($current_balance < 0): ?>
+                                        <span class="text-danger"><i
+                                                class="fas fa-arrow-down"></i> Số dư hiện đang âm</span>
+                                    <?php else: ?>
+                                        <span class="text-muted"><i class="fas fa-minus"></i> Không đổi</span>
+                                    <?php endif; ?>
                                 <?php elseif ($balance_change_percent >= 0): ?>
                                     <span class="text-success"><i
                                             class="fas fa-arrow-up"></i><?= $balance_change_percent ?>%</span>
