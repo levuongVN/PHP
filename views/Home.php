@@ -390,13 +390,13 @@ $login_time = $_SESSION['login_time'];
                             <h4 class="mb-4">Thao tác nhanh</h4>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <a href="#" class="action-btn">
+                                    <a href="/PHP/views/transaction/transaction_create.php" class="action-btn">
                                         <i class="fas fa-plus-circle"></i>
                                         <span>Thêm thu</span>
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="#" class="action-btn">
+                                    <a href="/PHP/views/transaction/transaction_create.php" class="action-btn">
                                         <i class="fas fa-minus-circle"></i>
                                         <span>Thêm chi</span>
                                     </a>
