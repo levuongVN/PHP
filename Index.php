@@ -18,58 +18,189 @@ if (isset($_SESSION['error'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
             display: flex;
             align-items: center;
+            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
+        /* Background image với hiệu ứng blur */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1611&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(8px) brightness(0.8);
+            transform: scale(1.1); /* Giúp blur không bị viền trắng */
+            z-index: -2;
+        }
+
+        /* Lớp phủ màu để tăng độ tương phản */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(102, 126, 234, 0.3); /* Màu tím với độ trong suốt */
+            z-index: -1;
+        }
+
         .login-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
             overflow: hidden;
         }
-        .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
         }
+
         .login-form {
             padding: 40px;
         }
+
+        .form-control {
+            border: 1px solid #e1e5ee;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
         .form-control:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: white;
+            transform: translateY(-2px);
         }
+
         .btn-login {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             color: white;
-            padding: 12px;
+            padding: 14px;
             font-weight: 600;
+            border-radius: 10px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
+        }
+
         .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
+
         .error {
             color: #dc3545;
             font-size: 0.875em;
             margin-top: 5px;
         }
+
         .input-group-text {
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.8);
+            border: 1px solid #e1e5ee;
             border-right: none;
+            border-radius: 10px 0 0 10px;
         }
+
         .form-control {
             border-left: none;
+            border-radius: 0 10px 10px 0;
         }
+
         .input-group:focus-within .input-group-text {
             border-color: #667eea;
             background-color: #e9ecef;
+        }
+
+        .demo-info {
+            background: rgba(248, 249, 250, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(222, 226, 230, 0.5);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+            }
+            
+            .login-form {
+                padding: 30px 25px;
+            }
+            
+            body::before {
+                filter: blur(5px) brightness(0.7);
+            }
         }
     </style>
 </head>
@@ -138,7 +269,7 @@ if (isset($_SESSION['error'])) {
                         </div>
 
                         <!-- Demo Account Info -->
-                        <div class="mt-4 p-3 bg-light rounded">
+                        <div class="mt-4 p-3 demo-info">
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i>
                                 <strong>Tài khoản demo:</strong> demo / 123456
