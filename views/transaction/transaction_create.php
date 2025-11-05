@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+session_start(); //  Cần để đọc thông báo từ session
 $type = $_GET['type'] ?? 'expense';
 ?>
 <!DOCTYPE html>
@@ -64,6 +65,24 @@ $type = $_GET['type'] ?? 'expense';
 
       <!-- Main content -->
       <div class="col-md-9 col-lg-10 main-content">
+
+        <!--  Thông báo lưu thành công / thất bại -->
+        <?php if (!empty($_SESSION['success'])): ?>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <?= htmlspecialchars($_SESSION['success']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <?php unset($_SESSION['success']); ?>
+        <?php elseif (!empty($_SESSION['error'])): ?>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <?= htmlspecialchars($_SESSION['error']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h4 class="m-0">Thêm giao dịch</h4>
           <a href="./transaction_index.php" class="btn btn-outline-secondary">
@@ -126,5 +145,16 @@ $type = $_GET['type'] ?? 'expense';
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!--  Tự động ẩn thông báo sau 3 giây -->
+  <script>
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }
+    }, 3000);
+  </script>
 </body>
 </html>
