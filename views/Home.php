@@ -343,7 +343,7 @@ $login_time = $_SESSION['login_time'];
                         <div class="recent-transactions">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4>Giao dịch gần đây</h4>
-                                <a href="#" class="btn btn-primary btn-sm">Xem tất cả</a>
+                                <a href="transaction/transaction_index.php" class="btn btn-primary btn-sm">Xem tất cả</a>
                             </div>
 
                             <div class="transaction-list">
@@ -398,13 +398,13 @@ $login_time = $_SESSION['login_time'];
                             <h4 class="mb-4">Thao tác nhanh</h4>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <a href="/PHP/views/transaction/transaction_create.php" class="action-btn">
+                                    <a href="./transaction/transaction_create.php" class="action-btn">
                                         <i class="fas fa-plus-circle"></i>
                                         <span>Thêm thu</span>
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="/PHP/views/transaction/transaction_create.php" class="action-btn">
+                                    <a href="./transaction/transaction_create.php" class="action-btn">
                                         <i class="fas fa-minus-circle"></i>
                                         <span>Thêm chi</span>
                                     </a>

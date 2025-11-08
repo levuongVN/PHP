@@ -8,8 +8,6 @@ error_reporting(E_ALL);
 $current_page = basename($_SERVER['PHP_SELF']);        // vd: transaction_index.php
 $current_dir  = basename(dirname($_SERVER['PHP_SELF'])); // vd: transaction, statistic, views
 
-// Ở gốc /views       -> '.'
-// Ở các thư mục con  -> '..'
 $base_path = ($current_dir === 'views') ? '.' : '..';
 
 // Đánh dấu active cho nhóm "Giao dịch"
@@ -100,7 +98,8 @@ $is_transaction = in_array($current_page, $transaction_pages, true);
       <i class="fas fa-chart-line"></i> Ngân sách
     </a>
 
-    <a class="nav-link" href="#">
+    <a class="nav-link <?= $current_page === 'reminder.php' ? 'active' : '' ?>" 
+      href="<?= $base_path ?>/reminder/reminder.php">
       <i class="fas fa-bell"></i> Nhắc nhở
     </a>
 

@@ -302,7 +302,7 @@ $login_time = $_SESSION['login_time'];
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="../handle/logout_process.php"><i
+                                <li><a class="dropdown-item" href="../../handle/logout_process.php"><i
                                             class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
                             </ul>
                         </div>
