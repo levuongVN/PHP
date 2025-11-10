@@ -1,0 +1,330 @@
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Tab navigation */
+        .nav-tabs-custom {
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 25px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 12px 25px;
+            margin-right: 5px;
+            border-radius: 10px 10px 0 0;
+            transition: all 0.3s;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: var(--primary);
+            background-color: white;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        /* Card thông báo */
+        .notification-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+            /* Animation mới */
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .notification-card.warning:hover {
+            box-shadow: 0 8px 25px rgba(248, 150, 30, 0.15);
+        }
+
+        .notification-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .notification-card.danger:hover {
+            box-shadow: 0 8px 25px rgba(247, 37, 133, 0.15);
+        }
+
+        .notification-card.success {
+            border-left-color: var(--success);
+        }
+
+        .notification-card.success:hover {
+            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.15);
+        }
+
+        .notification-card.info {
+            border-left-color: var(--info);
+        }
+
+        .notification-card.info:hover {
+            box-shadow: 0 8px 25px rgba(114, 9, 183, 0.15);
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            /* Animation mới */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .notification-icon.warning {
+            background: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
+        }
+
+        .notification-icon.danger {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+        }
+
+        .notification-icon.success {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .notification-icon.info {
+            background: rgba(114, 9, 183, 0.1);
+            color: var(--info);
+        }
+
+        /* CSS cho bill icon với gradient */
+        .bill-icon {
+            background: linear-gradient(135deg, var(--info), #8b5fe0);
+            color: white;
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .bill-icon.warning {
+            background: linear-gradient(135deg, var(--warning), #f9a826);
+        }
+
+        .bill-icon.danger {
+            background: linear-gradient(135deg, var(--danger), #ff2d7a);
+        }
+
+        .bill-icon.success {
+            background: linear-gradient(135deg, var(--success), #2dd4bf);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .notification-message {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .notification-meta {
+            font-size: 0.85rem;
+            color: #8d99ae;
+        }
+
+        .notification-actions {
+            margin-top: 15px;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            /* Animation mới */
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--info), #8b5fe0);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #8b5fe0, var(--info));
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .badge-count {
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+
+        /* Badge cho tab hóa đơn */
+        #bills-tab .badge-count {
+            background: var(--info);
+        }
+
+        /* CSS cho hóa đơn */
+        .bill-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--info);
+            background: rgba(114, 9, 183, 0.1);
+            padding: 6px 14px;
+            border-radius: 25px;
+            border: 2px solid rgba(114, 9, 183, 0.2);
+        }
+
+        .due-date-info {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(114, 9, 183, 0.05);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--info);
+            font-size: 0.95rem;
+        }
+
+        .alert-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .alert-status.text-danger {
+            background: rgba(247, 37, 133, 0.1);
+            border: 1px solid rgba(247, 37, 133, 0.3);
+        }
+
+        .alert-status.text-warning {
+            background: rgba(248, 150, 30, 0.1);
+            border: 1px solid rgba(248, 150, 30, 0.3);
+        }
+
+        .alert-status.text-success {
+            background: rgba(76, 201, 240, 0.1);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+
+        .bill-id {
+            background: rgba(108, 117, 125, 0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            border: 1px solid rgba(108, 117, 125, 0.2);
+        }
+
+        /* Animation keyframes */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .notification-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .notification-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }

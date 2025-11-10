@@ -274,7 +274,6 @@ $login_time = $_SESSION['login_time'];
 </head>
 
 <body>
-    <!-- Sidebar (giả định) -->
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
