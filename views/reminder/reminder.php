@@ -17,6 +17,7 @@ $full_name = $_SESSION['full_name'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/reminder.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -31,7 +32,11 @@ $full_name = $_SESSION['full_name'];
                         <h2 class="mb-0">Nhắc nhở</h2>
                         <p class="text-muted mb-0">Quản lý thông báo và cảnh báo ngân sách của bạn</p>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Nút Thêm Nhắc Nhở Mới -->
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                            <i class="fas fa-plus me-1"></i> Thêm nhắc nhở
+                        </button>
                         <div class="dropdown">
                             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
                                 data-bs-toggle="dropdown">
@@ -86,8 +91,8 @@ $full_name = $_SESSION['full_name'];
                                 <?php else: ?>
                                     <?php foreach ($budgetReminders as $reminder): ?>
                                         <?php
-                                        $alert = getBudgetAlertType($reminder['percentage']);
-                                        $spentAmount = floatval($reminder['amount']) * floatval($reminder['percentage']) / 100;
+                                        $alert = getBudgetAlertType($reminder['percentage_spent']);
+                                        $spentAmount = floatval($reminder['amount']) * floatval($reminder['percentage_spent']) / 100;
                                         ?>
                                         <div class="notification-card <?php echo $alert['type']; ?>">
                                             <div class="d-flex align-items-start">
@@ -95,13 +100,27 @@ $full_name = $_SESSION['full_name'];
                                                     <i class="fas fa-<?php echo $alert['icon']; ?>"></i>
                                                 </div>
                                                 <div class="notification-content">
-                                                    <div class="notification-title">
-                                                        <?php echo $alert['message']; ?> -
-                                                        <?php echo htmlspecialchars($reminder['name']); ?>
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div class="notification-title">
+                                                            <?php echo $alert['message']; ?> -
+                                                            <?php echo htmlspecialchars($reminder['name']); ?>
+                                                        </div>
+                                                        <div class="action-buttons">
+                                                            <button class="btn btn-sm btn-outline-primary me-1"
+                                                                data-bs-toggle="modal" data-bs-target="#editReminderModal"
+                                                                data-id="<?php echo $reminder['id']; ?>">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                                data-bs-target="#deleteReminderModal"
+                                                                data-id="<?php echo $reminder['id']; ?>">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <div class="notification-message">
                                                         Bạn đã chi tiêu <?php echo formatCurrency($spentAmount); ?>
-                                                        (<?php echo $reminder['percentage']; ?>%) so với ngân sách
+                                                        (<?php echo $reminder['percentage_spent']; ?>%) so với ngân sách
                                                         <?php echo formatCurrency($reminder['amount']); ?>.
                                                     </div>
                                                     <div class="notification-meta">
@@ -142,15 +161,30 @@ $full_name = $_SESSION['full_name'];
                                         <?php $status = getBillStatus($reminder['due_date']); ?>
                                         <div class="notification-card <?php echo $status['type']; ?>">
                                             <div class="d-flex align-items-start">
-                                                <div class="notification-icon <?php echo $status['type']; ?>">
-                                                    <i class="fas fa-file-invoice-dollar"></i>
+                                                <div class="notification-icon bill-icon <?php echo $status['type']; ?>">
+                                                    <i class="fas fa-file-invoice-dollar" style="color: white;"></i>
                                                 </div>
                                                 <div class="notification-content">
                                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <div class="notification-title">Hóa đơn
-                                                            <?php echo htmlspecialchars($reminder['name']); ?></div>
-                                                        <span
-                                                            class="bill-amount"><?php echo formatCurrency($reminder['amount']); ?></span>
+                                                            <?php echo htmlspecialchars($reminder['name']); ?>
+                                                        </div>
+                                                        <div>
+                                                            <span
+                                                                class="bill-amount"><?php echo formatCurrency($reminder['amount']); ?></span>
+                                                            <div class="action-buttons ms-2 d-inline-block">
+                                                                <button class="btn btn-sm btn-outline-primary me-1"
+                                                                    data-bs-toggle="modal" data-bs-target="#editReminderModal"
+                                                                    data-id="<?php echo $reminder['id']; ?>">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger"
+                                                                    data-bs-toggle="modal" data-bs-target="#deleteReminderModal"
+                                                                    data-id="<?php echo $reminder['id']; ?>">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <div class="notification-message">
@@ -164,18 +198,7 @@ $full_name = $_SESSION['full_name'];
                                                             <?php echo $status['message']; ?>
                                                         </div>
                                                     </div>
-
-                                                    <div class="notification-meta">
-                                                        <span class="bill-id">
-                                                            <i class="fas fa-hashtag me-1"></i>Mã:
-                                                            <?php echo $reminder['id']; ?>
-                                                        </span>
-                                                    </div>
-
                                                     <div class="notification-actions">
-                                                        <button class="btn btn-primary btn-sm me-2">
-                                                            <i class="fas fa-credit-card me-1"></i> Thanh toán ngay
-                                                        </button>
                                                         <button class="btn btn-outline-secondary btn-sm me-2">
                                                             <i class="fas fa-calendar-plus me-1"></i> Lên lịch
                                                         </button>
@@ -195,7 +218,9 @@ $full_name = $_SESSION['full_name'];
             </div>
         </div>
     </div>
-
+    <?php include './modals/create.php'; ?>
+    <?php include './modals/edit.php'; ?>
+    <?php include './modals/delete.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

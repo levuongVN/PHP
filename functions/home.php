@@ -94,7 +94,7 @@ function getCategoryBudgets($conn, $user_id, $month) {
                 LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
                 AND DATE_FORMAT(t.transaction_date, '%Y-%m') = ?
                 WHERE (c.user_id = ? OR c.user_id IS NULL)
-                GROUP BY c.id, c.name, c.color, c.icon, b.amount;
+                GROUP BY c.id, c.name, c.color, c.icon, b.amount
         ";
         
         $stmt = mysqli_prepare($conn, $sql);

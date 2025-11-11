@@ -6,6 +6,28 @@ require_once '../../handle/budget_process.php';
 require_once '../../functions/auth.php';
 
 isLoggedIn();
+$selected_period = $_GET['period'] ?? 'current';
+$selected_month = $_GET['month'] ?? date('Y-m');
+
+// Xác định tháng cần lọc
+switch ($selected_period) {
+    case 'previous':
+        $current_month = date('Y-m', strtotime('-1 month'));
+        break;
+    case 'all':
+        $current_month = 'all';
+        break;
+    case 'current':
+        $current_month = $selected_month;
+        break;
+}
+
+// Lấy dữ liệu theo bộ lọc
+if ($current_month === 'all') {
+    $category_budgetsMonth = getCategoryBudgetsAllTime($conn, $user_id);
+} else {
+    $category_budgetsMonth = getCategoryBudgets($conn, $user_id, $current_month);
+}
 
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
@@ -340,35 +362,38 @@ $login_time = $_SESSION['login_time'];
                     </div>
 
                     <!-- Bộ lọc theo tháng -->
-                    <div class="filter-section mb-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center">
-                                    <label class="form-label mb-0 me-3">Lọc theo tháng:</label>
-                                    <div class="input-group" style="width: 200px;">
-                                        <input type="month" class="form-control" id="budgetMonthFilter"
-                                            value="<?= date('Y-m') ?>">
-                                        <button class="btn btn-outline-secondary" type="button" id="applyFilterBtn">
-                                            <i class="fas fa-filter"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-primary btn-sm active"
-                                        data-period="current">
-                                        Tháng này
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-period="previous">
-                                        Tháng trước
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-period="all">
-                                        Tất cả
+                    <div class="filter-section mb-4 d-flex justify-content-between">
+                        <!-- Form cho input month -->
+                        <form method="GET" action="" id="monthFilterForm">
+                            <div class="d-flex align-items-center">
+                                <label class="form-label mb-0 me-3">Lọc theo tháng:</label>
+                                <div class="input-group" style="width: 200px;">
+                                    <input type="month" class="form-control" name="month" id="budgetMonthFilter"
+                                        value="<?= $_GET['month'] ?? date('Y-m') ?>">
+                                    <button class="btn btn-outline-secondary" type="submit">
+                                        <i class="fas fa-filter"></i>
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
+
+                        <!-- Form riêng cho period buttons -->
+                        <form method="GET" action="" id="periodFilterForm">
+                            <div class="btn-group" role="group">
+                                <button type="submit" name="period" value="current"
+                                    class="btn btn-outline-primary btn-sm <?= ($_GET['period'] ?? 'current') === 'current' ? 'active' : '' ?>">
+                                    Tháng này
+                                </button>
+                                <button type="submit" name="period" value="previous"
+                                    class="btn btn-outline-primary btn-sm <?= ($_GET['period'] ?? '') === 'previous' ? 'active' : '' ?>">
+                                    Tháng trước
+                                </button>
+                                <button type="submit" name="period" value="all"
+                                    class="btn btn-outline-primary btn-sm <?= ($_GET['period'] ?? '') === 'all' ? 'active' : '' ?>">
+                                    Tất cả
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="table-responsive">
@@ -469,19 +494,22 @@ $login_time = $_SESSION['login_time'];
                                             </div>
                                         </td>
                                         <td class="action-buttons">
-                                            <button class="btn btn-sm btn-outline-primary edit-budget-btn"
-                                                data-bs-toggle="modal" data-bs-target="#editBudgetModal"
-                                                data-budget-id="<?= $budget['id'] ?>"
-                                                data-category-id="<?= $budget['cate_id'] ?>"
-                                                data-value-amount="<?= number_format((float) $budget_amount, 0, ',', '.') ?>"
-                                                data-month-budget="<?= $budget['month'] ?>">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                                data-bs-target="#deleteBudgetModal" data-budget-id="<?= $budget['id'] ?>"
-                                                data-cate-id="<?= $budget['cate_id'] ?>">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <?php
+                                            if ($status_text !== 'Chưa đặt ngân sách'): ?>
+                                                <button class="btn btn-sm btn-outline-primary edit-budget-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#editBudgetModal"
+                                                    data-budget-id="<?= $budget['id'] ?>"
+                                                    data-category-id="<?= $budget['cate_id'] ?>"
+                                                    data-value-amount="<?= number_format((float) $budget_amount, 0, ',', '.') ?>"
+                                                    data-month-budget="<?= $budget['month'] ?>">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteBudgetModal" data-budget-id="<?= $budget['id'] ?>"
+                                                    data-cate-id="<?= $budget['cate_id'] ?>">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -515,57 +543,15 @@ $login_time = $_SESSION['login_time'];
                         const applyFilterBtn = document.getElementById('applyFilterBtn');
                         const periodButtons = document.querySelectorAll('[data-period]');
 
-                        // Xử lý nút áp dụng lọc
-                        applyFilterBtn.addEventListener('click', function () {
-                            const selectedMonth = monthFilter.value;
-                            console.log('Lọc theo tháng:', selectedMonth);
-                            // Gọi API hoặc xử lý lọc dữ liệu ở đây
-                            filterBudgetsByMonth(selectedMonth);
-                        });
-
                         // Xử lý nút lọc nhanh (tháng này, tháng trước, tất cả)
                         periodButtons.forEach(button => {
                             button.addEventListener('click', function () {
-                                // Xóa active class từ tất cả các nút
                                 periodButtons.forEach(btn => btn.classList.remove('active'));
-                                // Thêm active class cho nút được click
                                 this.classList.add('active');
 
                                 const period = this.dataset.period;
-                                handlePeriodFilter(period);
                             });
                         });
-
-                        function filterBudgetsByMonth(month) {
-                            // Logic lọc dữ liệu theo tháng
-                            console.log('Đang lọc ngân sách tháng:', month);
-                            // Ở đây bạn sẽ gọi API hoặc cập nhật dữ liệu hiển thị
-                        }
-
-                        function handlePeriodFilter(period) {
-                            let targetMonth;
-
-                            switch (period) {
-                                case 'current':
-                                    targetMonth = new Date().toISOString().slice(0, 7);
-                                    break;
-                                case 'previous':
-                                    const prevMonth = new Date();
-                                    prevMonth.setMonth(prevMonth.getMonth() - 1);
-                                    targetMonth = prevMonth.toISOString().slice(0, 7);
-                                    break;
-                                case 'all':
-                                    targetMonth = 'all';
-                                    break;
-                            }
-
-                            if (targetMonth !== 'all') {
-                                monthFilter.value = targetMonth;
-                            }
-
-                            console.log('Lọc theo kỳ:', period, 'Tháng:', targetMonth);
-                            filterBudgetsByMonth(targetMonth);
-                        }
                     });
                 </script>
             </div>

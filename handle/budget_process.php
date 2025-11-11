@@ -84,7 +84,7 @@ function handleCreateBudget($conn, $user_id, $categories)
     // Kiểm tra danh mục trùng
     $category_exists = false;
     foreach ($categories as $category) {
-        if ($category['name'] === $category_name && $category['type'] === $category_type) {
+        if ($category['name'] === $category_name && $category['type'] === $category_type && (date('Y-m', strtotime($category['created_at'])) == date('Y-m', strtotime($budget_date)))) {
             $category_exists = true;
             break;
         }
@@ -141,7 +141,8 @@ function handleDeleteBudget($conn, $user_id)
     header('Location: ../views/budget/budget.php');
     exit;
 }
-function handleUpdateBudget($conn, $user_id) {
+function handleUpdateBudget($conn, $user_id)
+{
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -176,7 +177,7 @@ function handleUpdateBudget($conn, $user_id) {
         // Xóa định dạng số (dấu phân cách hàng nghìn)
         $budget_amount_cleaned = str_replace('.', '', $budget_amount);
         $budget_amount_cleaned = str_replace(',', '', $budget_amount_cleaned);
-        
+
         // Kiểm tra xem có phải là số không
         if (!is_numeric($budget_amount_cleaned)) {
             $_SESSION['edit_error_budget_amount'] = 'Số tiền ngân sách phải là số.';
@@ -184,13 +185,13 @@ function handleUpdateBudget($conn, $user_id) {
         } else {
             // Chuyển đổi sang số
             $budget_amount_numeric = (float) $budget_amount_cleaned;
-            
+
             // Kiểm tra số tiền phải lớn hơn 0
             if ($budget_amount_numeric <= 0) {
                 $_SESSION['edit_error_budget_amount'] = 'Số tiền ngân sách phải lớn hơn 0.';
                 $hasError = true;
             }
-            
+
             // Kiểm tra số tiền không quá lớn (tuỳ chọn - ví dụ 100 tỷ)
             if ($budget_amount_numeric > 100000000000) {
                 $_SESSION['edit_error_budget_amount'] = 'Số tiền ngân sách quá lớn.';
@@ -217,7 +218,7 @@ function handleUpdateBudget($conn, $user_id) {
         $_SESSION['edit_category_id'] = $cate_id;
         $_SESSION['edit_budget_amount'] = $budget_amount;
         $_SESSION['edit_budget_date'] = $budget_date;
-        
+
         header('Location: ../views/budget/budget.php');
         exit;
     }
@@ -235,7 +236,7 @@ function handleUpdateBudget($conn, $user_id) {
         unset($_SESSION['edit_category_id']);
         unset($_SESSION['edit_budget_amount']);
         unset($_SESSION['edit_budget_date']);
-        
+
         $_SESSION['success'] = 'Cập nhật ngân sách thành công!';
     } else {
         $_SESSION['error'] = 'Có lỗi xảy ra khi cập nhật ngân sách.';

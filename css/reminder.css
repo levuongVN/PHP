@@ -137,7 +137,6 @@
 
         .notification-icon.success {
             background: rgba(76, 201, 240, 0.1);
-            color: var(--success);
         }
 
         .notification-icon.info {

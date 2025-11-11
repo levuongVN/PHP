@@ -6,18 +6,25 @@ function getCategoryBudgetsAllTime($conn, $user_id)
     try {
         $sql = "
             SELECT 
-                c.id,
-                c.name as category_name,
-                c.color,
-                c.icon,
-                COALESCE(SUM(b.amount), 0) as budget_amount,
-                COALESCE(SUM(t.amount), 0) as spent_amount
+            c.name as category_name,
+            c.color,
+            c.icon,
+            b.id,
+            b.month,
+            c.id as cate_id,
+            COALESCE(b.amount, 0) as budget_amount,
+            COALESCE(SUM(CASE 
+            WHEN YEAR(t.transaction_date) = YEAR(b.month) 
+            AND MONTH(t.transaction_date) = MONTH(b.month) 
+            THEN t.amount ELSE 0 
+            END), 0) as spent_amount
             FROM categories c
             LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ?
-            LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ? 
+            LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
             WHERE (c.user_id = ? OR c.user_id IS NULL)
-            GROUP BY c.id, c.name, c.color, c.icon
-        ";
+            GROUP BY c.id, c.name, c.color, c.icon, b.id, b.month, b.amount
+            ORDER BY b.month DESC, c.name;
+            ";
 
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "iii", $user_id, $user_id, $user_id);
@@ -40,7 +47,7 @@ function getCategoryBudgetsAllTime($conn, $user_id)
 function getCategories($conn, $user_id)
 {
     try {
-        $sql = "SELECT id, name, type FROM categories WHERE user_id = ?";
+        $sql = "SELECT id, name, type, created_at FROM categories WHERE user_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "i", $user_id);
         mysqli_stmt_execute($stmt);
@@ -62,16 +69,27 @@ function createBudget($conn, $user_id, $nameCate, $type, $month, $amount)
 {
     $createdAt = date("Y-m-d");
     try {
-        // Insert vào categories
-        $sql = "INSERT INTO categories (user_id, name, type, created_at) VALUES (?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "isss", $user_id, $nameCate, $type, $createdAt);
-        mysqli_stmt_execute($stmt);
+        $category_id = null;
+        $sql_check = "SELECT id FROM categories WHERE user_id = ? AND name = ? AND type = ?";
+        $stmt_check = mysqli_prepare($conn, $sql_check);
+        mysqli_stmt_bind_param($stmt_check, "iss", $user_id, $nameCate, $type);
+        mysqli_stmt_execute($stmt_check);
+        $result = mysqli_stmt_get_result($stmt_check);
 
-        // Lấy category_id vừa tạo
-        $category_id = mysqli_insert_id($conn);
-        mysqli_stmt_close($stmt);
-
+        if($row = mysqli_fetch_assoc($result)) {
+            // Category đã tồn tại -> dùng category_id có sẵn
+            $category_id = $row['id'];
+            mysqli_stmt_close($stmt_check);
+        } else {
+            // Category chưa tồn tại -> tạo mới
+            mysqli_stmt_close($stmt_check);
+            $sql = "INSERT INTO categories (user_id, name, type, created_at) VALUES (?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "isss", $user_id, $nameCate, $type, $createdAt);
+            mysqli_stmt_execute($stmt);
+            $category_id = mysqli_insert_id($conn);
+            mysqli_stmt_close($stmt);
+        }
         // Insert vào budgets
         $sqlBudget = "INSERT INTO budgets (user_id, category_id, amount, month, created_at) VALUES (?, ?, ?, ?, ?)";
         $stmtBudget = mysqli_prepare($conn, $sqlBudget);
