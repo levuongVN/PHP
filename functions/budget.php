@@ -47,7 +47,19 @@ function getCategoryBudgetsAllTime($conn, $user_id)
 function getCategories($conn, $user_id)
 {
     try {
-        $sql = "SELECT id, name, type, created_at FROM categories WHERE user_id = ?";
+        $sql = "SELECT 
+                c.id,
+                c.name,
+                c.type,
+                c.created_at,
+                b.id as budget_id,
+                b.amount as budget_amount,
+                b.month as budget_month,
+                b.created_at as budget_created_at
+                FROM categories c
+                LEFT JOIN budgets b ON c.id = b.category_id
+                WHERE c.user_id = ?
+                ORDER BY c.name, b.month DESC;";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "i", $user_id);
         mysqli_stmt_execute($stmt);

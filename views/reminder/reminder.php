@@ -1,4 +1,7 @@
 <?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require_once(__DIR__ . "/../../handle/reminder_process.php");
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
@@ -34,7 +37,7 @@ $full_name = $_SESSION['full_name'];
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <!-- Nút Thêm Nhắc Nhở Mới -->
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReminderModal">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createReminderModal">
                             <i class="fas fa-plus me-1"></i> Thêm nhắc nhở
                         </button>
                         <div class="dropdown">
@@ -92,23 +95,27 @@ $full_name = $_SESSION['full_name'];
                                     <?php foreach ($budgetReminders as $reminder): ?>
                                         <?php
                                         $alert = getBudgetAlertType($reminder['percentage_spent']);
-                                        $spentAmount = floatval($reminder['amount']) * floatval($reminder['percentage_spent']) / 100;
+                                        $spentAmount = $reminder['spent_amount'] ?? 0;
+                                        $percentage = min($reminder['percentage_spent'], 100);
                                         ?>
                                         <div class="notification-card <?php echo $alert['type']; ?>">
                                             <div class="d-flex align-items-start">
                                                 <div class="notification-icon <?php echo $alert['type']; ?>">
                                                     <i class="fas fa-<?php echo $alert['icon']; ?>"></i>
                                                 </div>
-                                                <div class="notification-content">
-                                                    <div class="d-flex justify-content-between align-items-start">
+                                                <div class="notification-content flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <div class="notification-title">
                                                             <?php echo $alert['message']; ?> -
                                                             <?php echo htmlspecialchars($reminder['name']); ?>
                                                         </div>
                                                         <div class="action-buttons">
-                                                            <button class="btn btn-sm btn-outline-primary me-1"
+                                                            <button class="btn btn-sm btn-outline-primary me-1 edit-budget-btn"
                                                                 data-bs-toggle="modal" data-bs-target="#editReminderModal"
-                                                                data-id="<?php echo $reminder['id']; ?>">
+                                                                data-reminder-id="<?= $reminder['id']; ?>"
+                                                                data-reminder-id-budget = "<?= $reminder['budget_id']; ?>"
+                                                                data-reminder-due-date = "<?= $reminder['due_date']; ?>"
+                                                                >
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
@@ -118,17 +125,37 @@ $full_name = $_SESSION['full_name'];
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div class="notification-message">
-                                                        Bạn đã chi tiêu <?php echo formatCurrency($spentAmount); ?>
-                                                        (<?php echo $reminder['percentage_spent']; ?>%) so với ngân sách
-                                                        <?php echo formatCurrency($reminder['amount']); ?>.
+
+                                                    <!-- PROGRESS BAR -->
+                                                    <div class="budget-progress mb-3">
+                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                            <small class="text-muted">Tiến độ chi tiêu</small>
+                                                            <small
+                                                                class="text-muted"><strong><?php echo $percentage; ?>%</strong></small>
+                                                        </div>
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-<?php echo $alert['type']; ?>"
+                                                                role="progressbar" style="width: <?php echo $percentage; ?>%"
+                                                                aria-valuenow="<?php echo $percentage; ?>" aria-valuemin="0"
+                                                                aria-valuemax="100">
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center mt-1">
+                                                            <small class="text-muted">
+                                                                Đã chi: <?php echo formatCurrency($spentAmount); ?>
+                                                            </small>
+                                                            <small class="text-muted">
+                                                                Ngân sách: <?php echo formatCurrency($reminder['amount']); ?>
+                                                            </small>
+                                                        </div>
                                                     </div>
+
                                                     <div class="notification-meta">
                                                         <i class="fas fa-clock me-1"></i> Hôm nay •
                                                         <i class="fas fa-tag me-1"></i>
                                                         <?php echo htmlspecialchars($reminder['name']); ?>
                                                     </div>
-                                                    <div class="notification-actions">
+                                                    <div class="notification-actions mt-3">
                                                         <button
                                                             class="btn btn-outline-<?php echo $alert['type']; ?> btn-sm me-2">
                                                             <i class="fas fa-chart-pie me-1"></i> Xem chi tiết
@@ -218,9 +245,9 @@ $full_name = $_SESSION['full_name'];
             </div>
         </div>
     </div>
-    <?php include './modals/create.php'; ?>
-    <?php include './modals/edit.php'; ?>
-    <?php include './modals/delete.php'; ?>
+    <?php include 'modals/create.php'; ?>
+    <?php include 'modals/edit.php'; ?>
+    <?php include 'modals/delete.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

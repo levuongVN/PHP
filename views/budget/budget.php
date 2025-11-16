@@ -435,7 +435,7 @@ $login_time = $_SESSION['login_time'];
                                         }
                                     } else {
                                         // Ngân sách > 0, tính phần trăm bình thường
-                                        $percentage = min(($spent_amount / $budget_amount) * 100, 100);
+                                        $percentage = min( ($spent_amount / $budget_amount) * 100, 100);
 
                                         // Xác định màu sắc và trạng thái dựa trên phần trăm
                                         if ($percentage <= 60) {

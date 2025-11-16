@@ -120,12 +120,12 @@ $categories = $categories_for_edit ?? [];
             var budgetAmount = button.getAttribute('data-value-amount');
             var month = button.getAttribute('data-month-budget');
 
-            console.log('DEBUG - Data from button:', {
-                budgetId: budgetId,
-                categoryId: categoryId,
-                budgetAmount: budgetAmount,
-                month: month
-            });
+            // console.log('DEBUG - Data from button:', {
+            //     budgetId: budgetId,
+            //     categoryId: categoryId,
+            //     budgetAmount: budgetAmount,
+            //     month: month
+            // });
 
             // Điền dữ liệu vào form
             document.getElementById('editBudgetId').value = budgetId || '';
