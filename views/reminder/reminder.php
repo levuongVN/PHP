@@ -92,11 +92,13 @@ $full_name = $_SESSION['full_name'];
                                         <p class="text-muted">Tất cả ngân sách của bạn đang trong tầm kiểm soát.</p>
                                     </div>
                                 <?php else: ?>
+                                    <?php $_SESSION['has_notifications'] = false ?>
                                     <?php foreach ($budgetReminders as $reminder): ?>
                                         <?php
                                         $alert = getBudgetAlertType($reminder['percentage_spent']);
                                         $spentAmount = $reminder['spent_amount'] ?? 0;
                                         $percentage = min($reminder['percentage_spent'], 100);
+                                        $is_read = $reminder['is_read'];
                                         ?>
                                         <div class="notification-card <?php echo $alert['type']; ?>">
                                             <div class="d-flex align-items-start">
@@ -113,19 +115,21 @@ $full_name = $_SESSION['full_name'];
                                                             <button class="btn btn-sm btn-outline-primary me-1 edit-budget-btn"
                                                                 data-bs-toggle="modal" data-bs-target="#editReminderModal"
                                                                 data-reminder-id="<?= $reminder['id']; ?>"
-                                                                data-reminder-id-budget = "<?= $reminder['budget_id']; ?>"
-                                                                data-reminder-due-date = "<?= $reminder['due_date']; ?>"
-                                                                >
+                                                                data-reminder-id-budget="<?= $reminder['budget_id']; ?>"
+                                                                data-reminder-due-date="<?= $reminder['due_date']; ?>">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
                                                                 data-bs-target="#deleteReminderModal"
-                                                                data-id="<?php echo $reminder['id']; ?>">
+                                                                data-reminder-id="<?php echo $reminder['id']; ?>">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </div>
                                                     </div>
-
+                                                    <!-- Tạo session để hiện UI khi có ngân sách >70% -->
+                                                    <?php if ($percentage > 70 && !$is_read): ?>
+                                                        <?php $_SESSION['has_notifications'] = true ?>
+                                                    <?php endif ?>
                                                     <!-- PROGRESS BAR -->
                                                     <div class="budget-progress mb-3">
                                                         <div class="d-flex justify-content-between align-items-center mb-1">
@@ -151,18 +155,23 @@ $full_name = $_SESSION['full_name'];
                                                     </div>
 
                                                     <div class="notification-meta">
-                                                        <i class="fas fa-clock me-1"></i> Hôm nay •
+                                                        <i class="fas fa-clock me-1"></i> Hôm nay
                                                         <i class="fas fa-tag me-1"></i>
                                                         <?php echo htmlspecialchars($reminder['name']); ?>
                                                     </div>
-                                                    <div class="notification-actions mt-3">
-                                                        <button
+                                                    <div class="notification-actions mt-3 d-flex">
+                                                        <a href="../statistic/statistic.php"
                                                             class="btn btn-outline-<?php echo $alert['type']; ?> btn-sm me-2">
                                                             <i class="fas fa-chart-pie me-1"></i> Xem chi tiết
-                                                        </button>
-                                                        <button class="btn btn-outline-secondary btn-sm">
-                                                            <i class="fas fa-times me-1"></i> Bỏ qua
-                                                        </button>
+                                                        </a>
+                                                        <form action="../../handle/reminder_process.php" class="<?php echo $reminder['is_read'] === 1 ? 'd-none' :'' ?>" method="post">
+                                                            <input type="hidden" name="action" value="read_reminder">
+                                                            <input type="hidden" name="id_reminder" value="<?= htmlspecialchars($reminder['id']) ?>">
+                                                            <button class="btn btn-outline-secondary btn-sm">
+                                                                <i class="fas fa-times"></i> Đã đọc
+                                                            </button>
+                                                        </form>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,7 +211,10 @@ $full_name = $_SESSION['full_name'];
                                                             <div class="action-buttons ms-2 d-inline-block">
                                                                 <button class="btn btn-sm btn-outline-primary me-1"
                                                                     data-bs-toggle="modal" data-bs-target="#editReminderModal"
-                                                                    data-id="<?php echo $reminder['id']; ?>">
+                                                                    data-reminder-id="<?php echo $reminder['id']; ?>"
+                                                                data-reminder-id-budget="<?= $reminder['budget_id']; ?>"
+                                                                    data-reminder-due-date = "<?php echo $reminder['due_date'] ?>"
+                                                                    >
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
                                                                 <button class="btn btn-sm btn-outline-danger"
@@ -226,9 +238,6 @@ $full_name = $_SESSION['full_name'];
                                                         </div>
                                                     </div>
                                                     <div class="notification-actions">
-                                                        <button class="btn btn-outline-secondary btn-sm me-2">
-                                                            <i class="fas fa-calendar-plus me-1"></i> Lên lịch
-                                                        </button>
                                                         <button class="btn btn-outline-success btn-sm">
                                                             <i class="fas fa-check me-1"></i> Đã thanh toán
                                                         </button>

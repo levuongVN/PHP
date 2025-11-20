@@ -232,6 +232,34 @@
             margin-left: 5px;
         }
 
+        /* .alert-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6b00;
+            cam, nổi bật
+            border-radius: 50%;
+            margin-left: 5px;
+            vertical-align: middle;
+            animation: blink 1.5s infinite;
+        }
+
+         @keyframes blink {
+
+            0%,
+            50%,
+            100% {
+                opacity: 1;
+            }
+
+            25%,
+            75% {
+                opacity: 0;
+            }
+        } */
+
+
+
         /* Badge cho tab hóa đơn */
         #bills-tab .badge-count {
             background: var(--info);

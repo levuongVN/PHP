@@ -22,19 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'create_reminder':
             handleCreateReminder($conn, $id);
             break;
-
         case 'edit_reminder':
             handleEditReminder($conn, $id);
             break;
 
         case 'delete_reminder':
-
+            handleDeleteReminder($conn, $id);
+            break;
+        case 'read_reminder':
+            handleReadReminder($conn, $id);
             break;
 
-        default:
-            $_SESSION['error'] = 'Hành động không hợp lệ';
-            header('Location: ../../views/reminder/reminder.php');
-            exit;
     }
 }
 
@@ -59,23 +57,23 @@ function getBudgetAlertType($percentage)
             'icon' => 'exclamation-triangle',
             'message' => 'Vượt ngân sách'
         ];
-    } elseif ($percent >= 95) {
+    } elseif ($percent >= 85) {
         return [
             'type' => 'danger',
             'icon' => 'exclamation-circle',
             'message' => 'Sắp vượt ngân sách'
         ];
-    } elseif ($percent >= 80) {
+    } elseif ($percent >= 70) {
         return [
             'type' => 'warning',
             'icon' => 'exclamation',
             'message' => 'Cảnh báo chi tiêu'
         ];
-    } elseif ($percent >= 50) {
+    } elseif ($percent > 50) {
         return [
             'type' => 'info',
             'icon' => 'chart-line',
-            'message' => 'Đã sử dụng một nửa ngân sách'
+            'message' => 'Đã sử dụng hơn một nửa ngân sách'
         ];
     } else {
         return [
@@ -106,7 +104,7 @@ function handleCreateReminder($conn, $user_id)
 {
     $typeReminder = $_POST['reminderType'] ?? '';
     $idBudgetReminder = $_POST['budget_id'] ?? '';
-    $dateReminder = $_POST['reminderDueDate'] ?? null;
+    $dateReminder = $_POST['editReminderDueDate'] ?? null;
     $hasError = false;
 
     if ($typeReminder === 'bill') {
@@ -128,15 +126,27 @@ function handleCreateReminder($conn, $user_id)
         header('Location: ../views/reminder/reminder.php');
         exit;
     } else {
+        $amountBudget = getAmountBudget($conn, $user_id, $idBudgetReminder);
+        $amount =0;
+        $spent = 0;
+        foreach( $amountBudget as $value ) {
+            $amount = $value['amount'];
+            $spent = $value['spent'];
+        }
+        $percentage = $amount > 0 ? ($spent / $amount) * 100 : 0;
+
+        // echo $amount .''. $spent .''. $percentage .'';
+
         createReminder(
             $conn,
             $user_id,
             $idBudgetReminder,
-            $typeReminder === 'budget' ? 0 : null,
+            $typeReminder === 'budget' ? $percentage : null,
             $typeReminder === 'bill' ? $dateReminder : null,
             false
         );
     }
+
 
     header('Location: ../views/reminder/reminder.php');
     exit;
@@ -144,39 +154,90 @@ function handleCreateReminder($conn, $user_id)
 
 function handleEditReminder($conn, $user_id)
 {
-    $id = $_POST['id'] ?? 0; 
+    $idReminder = $_POST['reminder_id'] ?? null;
     $Type = $_POST['editReminderType'] ?? '';
-    $budget_id = $_POST['category_id'] ?? 0;
-    $due_date = $_POST['reminderDueDate'] ?? null;
+    $due_date = $_POST['editReminderDueDate'] ?? null;
+    $editCategoryId = $_POST['editCategoryId'] ?? null;
     $hasError = false;
 
     if ($Type === 'bill') {
         if (empty($due_date)) {
-            $_SESSION['error_reminderDueDate'] = 'Vui lòng chọn ngày đến hạn';
+            $_SESSION['error_reminderDueDateEdit'] = 'Vui lòng chọn ngày đến hạn';
             $hasError = true;
         } else {
             $due_timestamp = strtotime($due_date);
             $today_timestamp = strtotime(date('Y-m-d'));
 
             if ($due_timestamp === false) {
-                $_SESSION['error_reminderDueDate'] = 'Ngày đến hạn không hợp lệ';
+                $_SESSION['error_reminderDueDateEdit'] = 'Ngày đến hạn không hợp lệ';
                 $hasError = true;
             } elseif ($due_timestamp < $today_timestamp) {
-                $_SESSION['error_reminderDueDate'] = 'Ngày đến hạn không được là ngày trong quá khứ';
+                $_SESSION['error_reminderDueDateEdit'] = 'Ngày đến hạn không được là ngày trong quá khứ';
                 $hasError = true;
             }
         }
     } else {
         if (!empty($due_date)) {
-            $_SESSION['error_reminderDueDate'] = 'Loại nhắc nhở không phù hợp với ngày đến hạn';
+            $_SESSION['error_reminderDueDateEdit'] = 'Loại nhắc nhở không phù hợp với ngày đến hạn';
             $hasError = true;
         }
     }
     if ($hasError) {
+        $_SESSION['oldEditTypeReminder'] = $Type;
+        $_SESSION['oldEditDueDate'] = $due_date;
         header('Location: ../views/reminder/reminder.php');
         exit;
-    }else{
+    } else {
+        $due_date = date('Y-m-d', strtotime($due_date));
+        updateReminder(
+            $conn,
+            $idReminder,
+            $user_id,
+            $editCategoryId,
+            $Type === 'budget' ? 0 : null,
+            $Type === 'bill' ? $due_date : null,
+            false
+        );
 
+
+        header('Location: ../views/reminder/reminder.php');
+        exit;
     }
+    // // debugging line
+    // echo "Err?" ,$_SESSION['error_reminderDueDateEdit'] ?? '';
+    // echo "Updating reminder for id: $idReminder, user_id:  $user_id, budget_id: $editCategoryId, due_date: $due_date, type: $Type";
+}
+function handleDeleteReminder($conn, $user_id)
+{
+    $reminderId = $_POST['reminderId'] ?? null;
+
+    // Code xóa lời nhắc do ngắn quá nên khong nhất thiết đưa vào handle, nếu cần sẽ đưa vào handle
+    if ($reminderId !== null) {
+        $sql = "DELETE FROM reminders WHERE id = ? AND user_id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $reminderId, $user_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    header('Location: ../views/reminder/reminder.php');
+    exit;
+}
+
+function handleReadReminder($conn, $user_id)
+{
+    $id_Reminder = $_POST['id_reminder'] ?? null;
+    if ($id_Reminder !== null) {
+        $sql = "UPDATE reminders 
+                SET is_read = 1
+                WHERE user_id = ? AND id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $user_id, $id_Reminder);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+    ;
+    header("Location:../views/reminder/reminder.php");
+    exit;
 }
 ?>

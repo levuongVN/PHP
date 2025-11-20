@@ -1,7 +1,12 @@
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editReminderModal">
-    Launch demo modal
-</button>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$ErrorMsg = $_SESSION["error_reminderDueDateEdit"] ?? '';
+$oldEditTypeReminder = $_SESSION["oldEditTypeReminder"] ?? "";
+unset($_SESSION["error_reminderDueDateEdit"]);
+unset($_SESSION["oldEditTypeReminder"]);
+?>
 
 <!-- Modal -->
 <div class="modal fade" id="editReminderModal" tabindex="-1" aria-labelledby="editReminderModalLabel"
@@ -15,6 +20,7 @@
             <div class="modal-body">
                 <form action="../../handle/reminder_process.php" method="POST" id="editReminderForm">
                     <input type="hidden" name="action" value="edit_reminder">
+                    <input type="hidden" name="reminder_id" id="editReminderId">
                     <div class="mb-3">
                         <label for="editReminderType" class="form-label">Loại Nhắc Nhở</label>
                         <select class="form-select" id="editReminderType" name="editReminderType">
@@ -36,8 +42,12 @@
                     </div>
                     <div class="mb-3" id="inputReminderDate">
                         <label for="editReminderDueDate" class="form-label">Ngày Đến Hạn</label>
-                        <input type="date" class="form-control" id="editReminderDueDate" name="editReminderDueDate"
-                            value="">
+                        <input type="date" class="form-control" id="editReminderDueDate" name="editReminderDueDate">
+                        <?php if (!empty($ErrorMsg)): ?>
+                            <div class="text-danger mt-2">
+                                <?= htmlspecialchars($ErrorMsg); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="alert alert-info" role="alert">
                         Khi chi tiêu ngân sách vượt quá 70% sẽ thông báo.
@@ -58,28 +68,36 @@
         function handleChangeStyle() {
             if (editReminderType.value === 'budget') {
                 document.getElementById('inputReminderDate').style.display = 'none';
+                document.getElementById('editReminderDueDate').value = null;
             } else {
                 document.getElementById('inputReminderDate').style.display = 'block';
             }
         }
         editReminderType.addEventListener('change', handleChangeStyle);
         handleChangeStyle();
+        // var editModalInstance = new bootstrap.Modal(document.getElementById('editReminderModal'));
+        // editModalInstance.show();
+        if (<?= json_encode(!empty($ErrorMsg)); ?>) {
+            var editModalInstance = new bootstrap.Modal(document.getElementById('editReminderModal'));
+            editModalInstance.show();
+        }
 
         var editModal = document.getElementById('editReminderModal');
+
+        <?php if (!empty($oldEditTypeReminder)): ?>
+            editReminderType.value = "<?= $oldEditTypeReminder; ?>";
+            handleChangeStyle();
+        <?php endif; ?>
         editModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
+            var reminderId = button.getAttribute('data-reminder-id');
             var reminderIdBudget = button.getAttribute('data-reminder-id-budget');
             var reminderDueDate = button.getAttribute('data-reminder-due-date');
-            var categoryId = button.getAttribute('data-category-id');
-
-            console.log('reminderDueDate:', reminderDueDate);
-
-            if(reminderDueDate.length > 0) {
+            document.getElementById('editReminderId').value = reminderId;
+            if (reminderDueDate.length > 0) {
                 editReminderType.value = 'bill';
                 document.getElementById('editReminderDueDate').value = reminderDueDate;
             }
-
-
             document.getElementById('editCategoryId').value = reminderIdBudget;
             handleChangeStyle();
         })
