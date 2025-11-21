@@ -8,6 +8,8 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../Index.php');
     exit();
 }
+$theme = $_SESSION['theme'] ?? '';
+$_SESSION['last_page'] = $_SERVER['REQUEST_URI'];
 
 // Lấy thông tin người dùng từ session
 $user_id = $_SESSION['user_id'];
@@ -29,7 +31,7 @@ $login_time = $_SESSION['login_time'];
     <link rel="stylesheet" href="../css/home.css">
 </head>
 
-<body>
+<body style="background: <?= $theme ?>">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
@@ -61,8 +63,7 @@ $login_time = $_SESSION['login_time'];
                 <span><?php echo htmlspecialchars($full_name); ?></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
+                <li><a class="dropdown-item" href="./profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item" href="../handle/logout_process.php">

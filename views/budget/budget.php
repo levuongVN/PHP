@@ -1,5 +1,6 @@
 <?php
 session_start();
+$theme = $_SESSION['theme'] ?? '';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../../handle/budget_process.php';
@@ -7,6 +8,7 @@ require_once '../../functions/auth.php';
 isLoggedIn();
 $selected_period = $_GET['period'] ?? 'current';
 $selected_month = $_GET['month'] ?? date('Y-m');
+$_SESSION['last_page'] = $_SERVER['REQUEST_URI'];
 
 // Xác định tháng cần lọc
 switch ($selected_period) {
@@ -48,7 +50,7 @@ $login_time = $_SESSION['login_time'];
     <link rel="stylesheet" href="../../css/budget.css">
 </head>
 
-<body>
+<body style="background: <?= $theme ?>">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
@@ -71,8 +73,7 @@ $login_time = $_SESSION['login_time'];
                                 <span><?php echo htmlspecialchars($full_name); ?></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
+                                <li><a class="dropdown-item" href="../profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

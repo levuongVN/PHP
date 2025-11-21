@@ -1,0 +1,65 @@
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+            /* <-- chuyển nền mượt */
+        }
+
+        /* Animation cho card */
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card {
+            max-width: 650px;
+            margin: 40px auto;
+            border-radius: 18px;
+            background: #ffffff;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+            animation: fadeSlideUp 0.7s ease-out;
+
+            transition: background 0.5s ease, color 0.5s ease;
+            /* <-- chuyển màu mượt */
+        }
+
+        /* Input hover effect */
+        .form-control:hover,
+        .form-select:hover {
+            border-color: #0d6efd;
+            transition: 0.3s;
+        }
+
+        /* Button animation */
+        .btn-primary {
+            transition: background 0.3s, transform 0.15s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Toggle Switch */
+        .form-switch .form-check-input {
+            width: 55px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+        }

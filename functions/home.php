@@ -93,7 +93,7 @@ function getCategoryBudgets($conn, $user_id, $month) {
                 LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ? AND DATE_FORMAT(b.month, '%Y-%m') = ?
                 LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
                 AND DATE_FORMAT(t.transaction_date, '%Y-%m') = ?
-                WHERE (c.user_id = ? OR c.user_id IS NULL)
+                WHERE (c.user_id = ? OR c.user_id IS NULL) AND b.category_id = c.id
                 GROUP BY c.id, c.name, c.color, c.icon, b.amount
         ";
         

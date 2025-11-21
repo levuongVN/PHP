@@ -21,7 +21,7 @@ function getCategoryBudgetsAllTime($conn, $user_id)
             FROM categories c
             LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ?
             LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
-            WHERE (c.user_id = ? OR c.user_id IS NULL)
+            WHERE (c.user_id = ? OR c.user_id IS NULL) AND b.category_id = c.id
             GROUP BY c.id, c.name, c.color, c.icon, b.id, b.month, b.amount
             ORDER BY b.month DESC, c.name;
             ";
@@ -88,7 +88,7 @@ function createBudget($conn, $user_id, $nameCate, $type, $month, $amount)
         mysqli_stmt_execute($stmt_check);
         $result = mysqli_stmt_get_result($stmt_check);
 
-        if($row = mysqli_fetch_assoc($result)) {
+        if ($row = mysqli_fetch_assoc($result)) {
             // Category đã tồn tại -> dùng category_id có sẵn
             $category_id = $row['id'];
             mysqli_stmt_close($stmt_check);
@@ -115,28 +115,17 @@ function createBudget($conn, $user_id, $nameCate, $type, $month, $amount)
         return false;
     }
 }
-function deleteBudget($conn, $user_id, $budget_id, $cate_id)
+function deleteBudget($conn, $user_id, $cate_id)
 {
     try {
-
         // 1. Xóa ngân sách
-        $sql = "DELETE FROM budgets WHERE id = ? AND user_id = ?";
+        $sql = "DELETE FROM budgets WHERE user_id = ? AND category_id = ?;";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ii", $budget_id, $user_id);
+        mysqli_stmt_bind_param($stmt, "ii", $user_id, $cate_id);
         $result = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
         if (!$result) {
-            mysqli_rollback($conn);
-            return false;
-        }
-        $sql_delete_cate = "DELETE FROM categories WHERE id = ? AND user_id = ?";
-        $stmt_delete_cate = mysqli_prepare($conn, $sql_delete_cate);
-        mysqli_stmt_bind_param($stmt_delete_cate, "ii", $cate_id, $user_id);
-        $result_delete_cate = mysqli_stmt_execute($stmt_delete_cate);
-        mysqli_stmt_close($stmt_delete_cate);
-
-        if (!$result_delete_cate) {
             mysqli_rollback($conn);
             return false;
         }

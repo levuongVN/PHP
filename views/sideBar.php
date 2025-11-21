@@ -57,9 +57,6 @@ $hasNotifications = $_SESSION['has_notifications'] ?? false;
           </span>
         <?php endif ?>
       </a>
-      <a class="nav-link" href="#">
-        <i class="fas fa-cog"></i> Cài đặt
-      </a>
     </nav>
   </div>
 </body>

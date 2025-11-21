@@ -130,7 +130,7 @@ function handleDeleteBudget($conn, $user_id)
         header('Location: ../views/budget/budget.php');
         exit;
     } else {
-        $result = deleteBudget($conn, $user_id, $budget_id, $cate_id);
+        $result = deleteBudget($conn, $budget_id, $cate_id);
         if ($result) {
             unset($_SESSION['error_delete_budget']);
         } else {

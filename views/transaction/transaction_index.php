@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . "/../../functions/auth.php") ;
 isLoggedIn();
+$theme = $_SESSION['theme'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -16,14 +17,14 @@ isLoggedIn();
     <link rel="stylesheet" href="../../css/sideBar.css">
 </head>
 
-<body>
+<body style="background: <?= $theme ?>">
   <div>
     <?php include '../sideBar.php' ?>
   </div>
 
   <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="m-0">Tổng quan giao dịch theo danh mục</h4>
+      <h4 class="m-0 <?= $theme == "#495057" ? "text-light" : "" ?>">Tổng quan giao dịch theo danh mục</h4>
       <a class="btn btn-primary" href="#">
         <i class="fas fa-plus me-1"></i> Thêm giao dịch
       </a>

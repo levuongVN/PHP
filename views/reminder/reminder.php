@@ -1,5 +1,6 @@
 <?php
 session_start();
+$theme = $_SESSION['theme'] ?? '';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once(__DIR__ . "/../../handle/reminder_process.php");
@@ -9,6 +10,8 @@ $user_id = $_SESSION['user_id'] ?? '';
 $username = $_SESSION['username'] ?? '';
 $email = $_SESSION['email'] ?? '';
 $full_name = $_SESSION['full_name'] ?? '';
+$_SESSION['last_page'] = $_SERVER['REQUEST_URI'];
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -21,9 +24,14 @@ $full_name = $_SESSION['full_name'] ?? '';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/reminder.css">
     <link rel="stylesheet" href="../../css/sideBar.css">
+    <style>
+        #reminderTabs .nav-link.active {
+            color: black <?=$theme == "#495057" ? "!important" :"" ?>;
+        }
+    </style>
 </head>
 
-<body>
+<body style="background: <?=$theme ?>;">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 col-lg-2 col-xl-2 col-xxl-2 sidebar">
@@ -50,8 +58,7 @@ $full_name = $_SESSION['full_name'] ?? '';
                                 <span><?php echo htmlspecialchars($full_name); ?></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
+                                <li><a class="dropdown-item" href="../profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -65,17 +72,18 @@ $full_name = $_SESSION['full_name'] ?? '';
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs nav-tabs-custom" id="reminderTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="budget-tab" data-bs-toggle="tab" data-bs-target="#budget"
+                        <button class="nav-link active  <?=$theme == "#495057" ? "text-light" :"" ?>" id="budget-tab" data-bs-toggle="tab" data-bs-target="#budget"
                             type="button" role="tab">
                             <i class="fas fa-chart-pie me-2"></i>Ngân sách
                             <span class="badge-count"><?php echo count($budgetReminders); ?></span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="bills-tab" data-bs-toggle="tab" data-bs-target="#bills"
+                        <button class="nav-link <?=$theme == "#495057" ? "text-light" :"" ?>" id="bills-tab" data-bs-toggle="tab" data-bs-target="#bills"
                             type="button" role="tab">
-                            <i class="fas fa-file-invoice-dollar me-2"></i>Hóa đơn
-                            <span class="badge-count"><?php echo count($billReminders); ?></span>
+                            <i class="fas fa-file-invoice-dollar me-2"></i>
+                            Hóa đơn
+                            <span class="badge-count "><?php echo count($billReminders); ?></span>
                         </button>
                     </li>
                 </ul>
@@ -194,8 +202,8 @@ $full_name = $_SESSION['full_name'] ?? '';
                                 <?php if (empty($billReminders)): ?>
                                     <div class="empty-state">
                                         <i class="fas fa-file-invoice-dollar"></i>
-                                        <h4>Không có hóa đơn sắp đến hạn</h4>
-                                        <p class="text-muted">Tất cả hóa đơn của bạn đã được thanh toán.</p>
+                                        <h4 class="<?=$theme == "#495057" ? "text-light" :"" ?>">Không có hóa đơn sắp đến hạn</h4>
+                                        <p class=" <?=$theme == "#495057" ? "text-light" :"text-muted" ?>">Tất cả hóa đơn của bạn đã được thanh toán.</p>
                                     </div>
                                 <?php else: ?>
                                     <?php foreach ($billReminders as $reminder): ?>
