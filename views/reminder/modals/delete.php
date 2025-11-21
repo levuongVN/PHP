@@ -1,3 +1,7 @@
+<?php
+require_once(__DIR__ . "/../../../functions/auth.php") ;
+isLoggedIn();
+?>
 <!-- Delete Reminder Modal -->
 <div class="modal fade" id="deleteReminderModal" tabindex="-1" aria-labelledby="deleteReminderModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">

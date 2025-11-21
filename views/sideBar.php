@@ -3,7 +3,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+require_once(__DIR__ . "/../functions/auth.php") ;
+isLoggedIn();
 // Xác định base path tự động theo vị trí file hiện tại
 $current_page = basename($_SERVER['PHP_SELF']);        // vd: transaction_index.php
 $current_dir = basename(dirname($_SERVER['PHP_SELF'])); // vd: transaction, statistic, views

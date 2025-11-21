@@ -1,3 +1,7 @@
+<?php
+require_once(__DIR__ . "/../../../functions/auth.php") ;
+isLoggedIn();
+?>
 <!-- Modal xóa ngân sách -->
 <div class="modal fade" id="deleteBudgetModal" tabindex="-1" aria-labelledby="deleteBudgetModalLabel" aria-hidden="true">
     <div class="modal-dialog">

@@ -4,6 +4,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start(); //  Cần để đọc thông báo từ session
+require_once(__DIR__ . "/../../functions/auth.php") ;
+isLoggedIn();
 $type = $_GET['type'] ?? 'expense';
 ?>
 <!DOCTYPE html>

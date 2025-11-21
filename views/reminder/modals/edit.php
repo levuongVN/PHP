@@ -2,6 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once(__DIR__ . "/../../../functions/auth.php") ;
+isLoggedIn();
 $ErrorMsg = $_SESSION["error_reminderDueDateEdit"] ?? '';
 $oldEditTypeReminder = $_SESSION["oldEditTypeReminder"] ?? "";
 unset($_SESSION["error_reminderDueDateEdit"]);

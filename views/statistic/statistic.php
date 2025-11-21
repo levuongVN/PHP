@@ -3,7 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../../handle/home_process.php';
 require_once '../../handle/statistic_process.php';
-
+require_once(__DIR__ . "/../../functions/auth.php") ;
+isLoggedIn();
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $email = $_SESSION['email'];

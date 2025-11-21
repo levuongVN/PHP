@@ -1,3 +1,8 @@
+<?php
+require_once(__DIR__ . "/../../functions/auth.php") ;
+isLoggedIn();
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 

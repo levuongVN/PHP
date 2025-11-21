@@ -2,7 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+require_once(__DIR__ . "/../../../functions/auth.php") ;
+isLoggedIn();
 // Lấy giá trị lỗi từ session và gán cho biến cục bộ, sau đó xóa chúng khỏi session
 $has_edit_error = false;
 $edit_error_category = null;

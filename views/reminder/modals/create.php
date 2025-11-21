@@ -3,7 +3,8 @@
 $oldTypeReminder = $_SESSION['oldTypeReminder'] ?? '';
 $oldIdBudgetReminder = $_SESSION['oldIdBudgetReminder'] ?? '';
 $oldDateReminder = $_SESSION['oldDateReminder'] ?? '';
-
+require_once(__DIR__ . "/../../../functions/auth.php") ;
+isLoggedIn();
 unset($_SESSION['oldTypeReminder']);
 unset($_SESSION['oldIdBudgetReminder']);
 unset($_SESSION['oldDateReminder']);

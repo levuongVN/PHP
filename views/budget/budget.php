@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../../handle/budget_process.php';
 require_once '../../functions/auth.php';
-
 isLoggedIn();
 $selected_period = $_GET['period'] ?? 'current';
 $selected_month = $_GET['month'] ?? date('Y-m');
