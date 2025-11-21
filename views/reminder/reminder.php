@@ -3,12 +3,11 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once(__DIR__ . "/../../handle/reminder_process.php");
-$user_id = $_SESSION['user_id'];
-$username = $_SESSION['username'];
-$email = $_SESSION['email'];
-$full_name = $_SESSION['full_name'];
+$user_id = $_SESSION['user_id'] ?? '';
+$username = $_SESSION['username'] ?? '';
+$email = $_SESSION['email'] ?? '';
+$full_name = $_SESSION['full_name'] ?? '';
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -164,9 +163,12 @@ $full_name = $_SESSION['full_name'];
                                                             class="btn btn-outline-<?php echo $alert['type']; ?> btn-sm me-2">
                                                             <i class="fas fa-chart-pie me-1"></i> Xem chi tiết
                                                         </a>
-                                                        <form action="../../handle/reminder_process.php" class="<?php echo $reminder['is_read'] === 1 ? 'd-none' :'' ?>" method="post">
+                                                        <form action="../../handle/reminder_process.php"
+                                                            class="<?php echo $reminder['is_read'] === 1 ? 'd-none' : '' ?>"
+                                                            method="post">
                                                             <input type="hidden" name="action" value="read_reminder">
-                                                            <input type="hidden" name="id_reminder" value="<?= htmlspecialchars($reminder['id']) ?>">
+                                                            <input type="hidden" name="id_reminder"
+                                                                value="<?= htmlspecialchars($reminder['id']) ?>">
                                                             <button class="btn btn-outline-secondary btn-sm">
                                                                 <i class="fas fa-times"></i> Đã đọc
                                                             </button>
@@ -212,14 +214,13 @@ $full_name = $_SESSION['full_name'];
                                                                 <button class="btn btn-sm btn-outline-primary me-1"
                                                                     data-bs-toggle="modal" data-bs-target="#editReminderModal"
                                                                     data-reminder-id="<?php echo $reminder['id']; ?>"
-                                                                data-reminder-id-budget="<?= $reminder['budget_id']; ?>"
-                                                                    data-reminder-due-date = "<?php echo $reminder['due_date'] ?>"
-                                                                    >
+                                                                    data-reminder-id-budget="<?= $reminder['budget_id']; ?>"
+                                                                    data-reminder-due-date="<?php echo $reminder['due_date'] ?>">
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
                                                                 <button class="btn btn-sm btn-outline-danger"
                                                                     data-bs-toggle="modal" data-bs-target="#deleteReminderModal"
-                                                                    data-id="<?php echo $reminder['id']; ?>">
+                                                                    data-reminder-id="<?php echo $reminder['id']; ?>">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </div>
@@ -232,19 +233,35 @@ $full_name = $_SESSION['full_name'];
                                                             Đến hạn:
                                                             <strong><?php echo date('d/m/Y', strtotime($reminder['due_date'])); ?></strong>
                                                         </div>
+
                                                         <div class="alert-status text-<?php echo $status['type']; ?>">
                                                             <i class="fas fa-<?php echo $status['icon']; ?> me-1"></i>
                                                             <?php echo $status['message']; ?>
                                                         </div>
                                                     </div>
                                                     <div class="notification-actions">
-                                                        <button class="btn btn-outline-success btn-sm">
-                                                            <i class="fas fa-check me-1"></i> Đã thanh toán
-                                                        </button>
+                                                        <form action="../../handle/reminder_process.php" method="post">
+                                                            <input type="hidden" name="action" value="mark_paid">
+                                                            <input type="hidden" name="id_reminder_paid"
+                                                                value="<?php echo $reminder['id'] ?>">
+                                                            <button
+                                                                class="btn btn-outline-success btn-sm 
+                                                                <?php echo $reminder['is_paid'] === 1 ? 'disabled bg-success text-light' : '' ?>">
+                                                                <i class="fas fa-check me-1"></i> Đã thanh toán
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- Khi đến hạn thanh toán hoá đơn cũng có dot thong báo -->
+                                        <?php
+                                        $today = date('Y-m-d');
+                                        $due_date = date('Y-m-d', strtotime($reminder['due_date'])) ?? '';
+                                        if ($due_date === $today && $reminder['is_paid'] == 0):
+                                            $_SESSION['has_notifications'] = true;
+                                        endif;
+                                        ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>

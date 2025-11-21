@@ -32,6 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'read_reminder':
             handleReadReminder($conn, $id);
             break;
+        case 'mark_paid':
+            handlePaidReminder($conn, $id);
+            break;
 
     }
 }
@@ -104,9 +107,10 @@ function handleCreateReminder($conn, $user_id)
 {
     $typeReminder = $_POST['reminderType'] ?? '';
     $idBudgetReminder = $_POST['budget_id'] ?? '';
-    $dateReminder = $_POST['editReminderDueDate'] ?? null;
+    $dateReminder = $_POST['reminderDueDate'] ?? null;
     $hasError = false;
 
+    // echo $dateReminder;
     if ($typeReminder === 'bill') {
         if (empty($dateReminder)) {
             $hasError = true;
@@ -136,7 +140,6 @@ function handleCreateReminder($conn, $user_id)
         $percentage = $amount > 0 ? ($spent / $amount) * 100 : 0;
 
         // echo $amount .''. $spent .''. $percentage .'';
-
         createReminder(
             $conn,
             $user_id,
@@ -237,6 +240,20 @@ function handleReadReminder($conn, $user_id)
         mysqli_stmt_close($stmt);
     }
     ;
+    header("Location:../views/reminder/reminder.php");
+    exit;
+}
+function handlePaidReminder($conn, $user_id){
+    $id_Reminder = $_POST["id_reminder_paid"] ?? null;
+    if ($id_Reminder !== null) {
+        $sql = "UPDATE reminders 
+                SET is_paid = 1
+                WHERE user_id = ? AND id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii",$user_id,$id_Reminder);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    };
     header("Location:../views/reminder/reminder.php");
     exit;
 }

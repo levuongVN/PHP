@@ -9,6 +9,7 @@ function getRemindersById($conn, $id)
     r.due_date,
     r.budget_id,
     r.is_read,
+    r.is_paid,
     c.name,
     b.amount,
     COALESCE(SUM(t.amount), 0) as spent_amount
