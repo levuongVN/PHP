@@ -3,6 +3,8 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once(__DIR__ . "/../../handle/reminder_process.php");
+require_once(__DIR__ . "/../../functions/auth.php") ;
+isLoggedIn();
 $user_id = $_SESSION['user_id'] ?? '';
 $username = $_SESSION['username'] ?? '';
 $email = $_SESSION['email'] ?? '';
@@ -18,6 +20,7 @@ $full_name = $_SESSION['full_name'] ?? '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/reminder.css">
+    <link rel="stylesheet" href="../../css/sideBar.css">
 </head>
 
 <body>

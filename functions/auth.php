@@ -9,8 +9,8 @@ function isLoggedIn()
     // Kiểm tra xem user đã đăng nhập chưa
     if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
         // Nếu chưa đăng nhập, set thông báo lỗi và chuyển hướng
-        $_SESSION['error'] = 'Bạn cần đăng nhập để truy cập trang này!';
-        header('Location: ../Index.php ');
+        $_SESSION['errorLogin'] = 'Bạn cần đăng nhập để truy cập trang này!';
+        header('Location: ../../Index.php ');
         exit();
     }
 }

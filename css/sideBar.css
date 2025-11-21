@@ -1,0 +1,68 @@
+  .mm-sidebar {
+    background: linear-gradient(135deg, #4361ee, #3f37c9);
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    padding-top: 20px;
+    z-index: 1000;
+  }
+
+  .mm-sidebar .logo {
+    padding: 0 20px 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .mm-sidebar .logo h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .mm-sidebar .nav {
+    margin-top: 16px;
+    padding: 0 10px 20px;
+  }
+
+  .mm-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background .25s ease;
+  }
+
+  .mm-sidebar .nav-link i {
+    width: 22px;
+    margin-right: 10px;
+    text-align: center;
+  }
+
+  .mm-sidebar .nav-link:hover,
+  .mm-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  /* Đảm bảo nội dung chính né sidebar (nếu trang chưa có) */
+  .main-content {
+    margin-left: 250px;
+  }
+
+  @media (max-width: 768px) {
+    .mm-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+
+    .main-content {
+      margin-left: 0 !important;
+    }
+  }
