@@ -98,11 +98,32 @@ $currentBalance = $totalIncome - $totalExpense;
 
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4 class="m-0 <?= $theme == "#495057" ? "text-light" : "" ?>">Tổng quan giao dịch theo danh mục</h4>
-
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
-        <i class="fas fa-plus me-1"></i> Thêm giao dịch
-      </button>
+      <div class="d-flex align-items-center ms-auto">
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
+              class="user-avatar me-2">
+            <span><?php echo htmlspecialchars($full_name); ?></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="../profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="../handle/logout_process.php">
+                <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <div class="col-12 d-flex mb-4">
+  <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
+    <i class="fas fa-plus me-1"></i> Thêm giao dịch
+  </button>
+</div>
 
     <!-- Summary -->
     <div class="row mb-4">
@@ -176,7 +197,7 @@ $currentBalance = $totalIncome - $totalExpense;
                 <?php foreach ($info['transactions'] as $tran): ?>
                   <div class="transaction-row">
                     <div class="flex-grow-1">
-                      <div class="fw-bold"><?= htmlspecialchars($tran['description']) ?></div>
+                      <div class="fw-bold"><?= htmlspecialchars($tran['description'] ?? '') ?></div>
                       <small><?= date('d/m/Y', strtotime($tran['transaction_date'])) ?></small>
                     </div>
 
@@ -185,7 +206,6 @@ $currentBalance = $totalIncome - $totalExpense;
                         <?= $tran['type'] === 'income' ? '+' : '-' ?>
                         <?= format_vnd($tran['amount']) ?>
                       </div>
-
                       <div class="mt-2">
                         <!-- Nút SỬA mở modal -->
                         <button type="button" class="btn btn-sm btn-outline-secondary btn-edit-transaction"
@@ -222,7 +242,7 @@ $currentBalance = $totalIncome - $totalExpense;
 
   <?php include './transaction_create.php'; ?>
   <?php include './transaction_edit.php'; ?>
-                  
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -91,14 +91,14 @@ function handleCreateBudget($conn, $user_id, $categories)
             break;
         }
     }
-
     if ($category_exists) {
         $createBudgetAvailable = createBudgetAvailable($conn, $user_id, $idCategory);
-        if ($createBudgetAvailable) {
-            header('Location: ../views/budget/budget.php');
-            exit;
-        }
-        exit;
+        echo $createBudgetAvailable;
+        // if ($createBudgetAvailable) {
+        //     header('Location: ../views/budget/budget.php');
+        //     exit;
+        // }
+        // exit;
     }
 
     if ($hasError) {

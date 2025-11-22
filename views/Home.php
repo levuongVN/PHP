@@ -41,39 +41,42 @@ $login_time = $_SESSION['login_time'];
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Header -->
                 <div class="header d-flex justify-content-start align-items-center" style="gap: 40px;">
-    <!-- Phần chào người dùng bên trái -->
-    <div class="flex-shrink-0">
-        <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
-        <p class="text-muted mb-0">
-            Hôm nay là Thứ Tư, 15 tháng 11, 2023
-        </p>
-    </div>
+                    <!-- Phần chào người dùng bên trái -->
+                    <div class="flex-shrink-0">
+                        <h2 class="mb-0">Xin chào, <?php echo htmlspecialchars($full_name); ?>!</h2>
+                        <p class="text-muted mb-0">
+                            Hôm nay là Thứ Tư, 15 tháng 11, 2023
+                        </p>
+                    </div>
 
-    <!-- Phần tìm kiếm và avatar -->
-    <div class="d-flex align-items-center ms-auto">
-        <div class="input-group me-3" style="width: 300px;">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-            <input type="text" class="form-control" placeholder="Tìm kiếm...">
-        </div>
-        <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-                data-bs-toggle="dropdown">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
-                    class="user-avatar me-2">
-                <span><?php echo htmlspecialchars($full_name); ?></span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="./profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item" href="../handle/logout_process.php">
-                        <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+                    <!-- Phần tìm kiếm và avatar -->
+                    <div class="d-flex align-items-center ms-auto">
+                        <div class="input-group me-3" style="width: 300px;">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                data-bs-toggle="dropdown">
+                                <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
+                                    class="user-avatar me-2">
+                                <span><?php echo htmlspecialchars($full_name); ?></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="./profile/profile.php"><i
+                                            class="fas fa-user me-2"></i> Hồ sơ</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="../handle/logout_process.php">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
 
                 <!-- Stats Cards -->
@@ -122,8 +125,7 @@ $login_time = $_SESSION['login_time'];
                             <div class="mt-2">
                                 <?php if (abs($balance_change_percent) < 0.1): ?>
                                     <?php if ($current_balance < 0): ?>
-                                        <span class="text-danger"><i
-                                                class="fas fa-arrow-down"></i> Số dư hiện đang âm</span>
+                                        <span class="text-danger"><i class="fas fa-arrow-down"></i> Số dư hiện đang âm</span>
                                     <?php else: ?>
                                         <span class="text-muted"><i class="fas fa-minus"></i> Không đổi</span>
                                     <?php endif; ?>
@@ -157,7 +159,8 @@ $login_time = $_SESSION['login_time'];
                         <div class="recent-transactions">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4>Giao dịch gần đây</h4>
-                                <a href="transaction/transaction_index.php" class="btn btn-primary btn-sm">Xem tất cả</a>
+                                <a href="transaction/transaction_index.php" class="btn btn-primary btn-sm">Xem tất
+                                    cả</a>
                             </div>
 
                             <div class="transaction-list">
