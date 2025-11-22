@@ -196,7 +196,7 @@ $login_time = $_SESSION['login_time'];
                                     <div class="text-center py-5">
                                         <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
                                         <p class="text-muted mb-3">Chưa có giao dịch nào</p>
-                                        <a href="./transaction/transaction_create.php" class="btn btn-primary btn-sm">
+                                        <a href="./transaction/transaction_index.php" class="btn btn-primary btn-sm">
                                             <i class="fas fa-plus me-1"></i> Thêm giao dịch đầu tiên
                                         </a>
                                     </div>
@@ -212,13 +212,13 @@ $login_time = $_SESSION['login_time'];
                             <h4 class="mb-4">Thao tác nhanh</h4>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <a href="./transaction/transaction_create.php" class="action-btn">
+                                    <a href="./transaction/transaction_index.php" class="action-btn">
                                         <i class="fas fa-plus-circle"></i>
                                         <span>Thêm thu</span>
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="./transaction/transaction_create.php" class="action-btn">
+                                    <a href="./transaction/transaction_index.php" class="action-btn">
                                         <i class="fas fa-minus-circle"></i>
                                         <span>Thêm chi</span>
                                     </a>

@@ -64,100 +64,123 @@ $type = $_GET['type'] ?? 'expense';
       <!-- Sidebar -->
       <div class="col-md-3 col-lg-2 sidebar p-0">
         <?php include '../sideBar.php'; ?>
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../../functions/dbConnect.php';
+require_once __DIR__ . '/../../functions/transaction.php';
+
+$conn = getDbConnection();
+
+if (!isset($_SESSION['user_id'])) {
+    return;
+}
+
+$userId = (int) $_SESSION['user_id'];
+
+$categories_income  = transaction_getCategories($conn, $userId, 'income');
+$categories_expense = transaction_getCategories($conn, $userId, 'expense');
+$allCategories      = array_merge($categories_income, $categories_expense);
+?>
+
+<!-- Modal thêm giao dịch -->
+<div class="modal fade" id="createTransactionModal" tabindex="-1"
+     aria-labelledby="createTransactionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header modal-header-gradient">
+        <h5 class="modal-title" id="createTransactionModalLabel">Thêm giao dịch mới</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- Main content -->
-      <div class="col-md-9 col-lg-10 main-content">
+      <form method="post" action="../../handle/transaction_store.php">
+        <div class="modal-body">
 
-        <!--  Thông báo lưu thành công / thất bại -->
-        <?php if (!empty($_SESSION['success'])): ?>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <?= htmlspecialchars($_SESSION['success']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          <div class="mb-3">
+            <label class="form-label">Ngày</label>
+            <input type="date" name="transaction_date" class="form-control"
+                   value="<?= date('Y-m-d') ?>" required>
           </div>
-          <?php unset($_SESSION['success']); ?>
-        <?php elseif (!empty($_SESSION['error'])): ?>
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <?= htmlspecialchars($_SESSION['error']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="m-0">Thêm giao dịch</h4>
-          <a href="./transaction_index.php" class="btn btn-outline-secondary">
-            <i class="fas fa-list"></i> Danh sách
-          </a>
+          <div class="mb-3">
+            <label class="form-label">Loại giao dịch</label>
+            <select name="type" class="form-select" required>
+              <option value="expense">Chi tiêu</option>
+              <option value="income">Thu nhập</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Danh mục</label>
+            <select name="category_id" class="form-select" required>
+              <option value="">-- Chọn danh mục --</option>
+              <?php foreach ($allCategories as $cat): ?>
+                <option value="<?= htmlspecialchars($cat['id']) ?>">
+                    <?= htmlspecialchars($cat['name']) ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Số tiền</label>
+            <div class="input-group">
+              <!-- dùng text + format dấu chấm -->
+              <input type="text" name="amount"
+                     class="form-control money-input"
+                     placeholder="Nhập số tiền" required>
+              <span class="input-group-text">₫</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Ghi chú</label>
+            <textarea name="description" rows="3" class="form-control"
+                      placeholder="Ví dụ: Ăn sáng, lương tháng 11 ..."></textarea>
+          </div>
+
+          <!-- báo cho handle biết là tạo mới & mở từ index -->
+          <input type="hidden" name="action" value="create">
+          <input type="hidden" name="from_index" value="1">
+
         </div>
 
-        <form class="card p-4 shadow-sm" method="post" action="../../handle/transaction_store.php">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Ngày</label>
-              <input type="date" name="transaction_date" class="form-control" 
-                     value="<?= date('Y-m-d') ?>" required>
-            </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu giao dịch</button>
+        </div>
 
-            <div class="col-md-4">
-              <label class="form-label">Danh mục</label>
-              <select name="category_id" class="form-select" required>
-                <option value="">-- Chọn danh mục --</option>
-                <option value="1">Lương</option>
-                <option value="2">Mua sắm</option>
-                <option value="3">Ăn uống</option>
-                <option value="4">Di chuyển</option>
-                <option value="5">Giải trí</option>
-              </select>
-            </div>
+      </form>
 
-            <div class="col-md-4">
-              <label class="form-label">Loại</label>
-              <select name="type" class="form-select" required>
-                <option value="expense" <?= $type==='expense'?'selected':'' ?>>Chi</option>
-                <option value="income" <?= $type==='income'?'selected':'' ?>>Thu</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Số tiền</label>
-              <input type="number" name="amount" step="1" class="form-control" 
-                     placeholder="Nhập số tiền" required>
-            </div>
-
-            <div class="col-md-12">
-              <label class="form-label">Ghi chú</label>
-              <textarea name="description" rows="3" class="form-control" 
-                        placeholder="Ví dụ: Bún bò, lương tháng 11 ..."></textarea>
-            </div>
-
-            <div class="col-12 d-flex gap-2 mt-3">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-1"></i> Lưu
-              </button>
-              <a class="btn btn-light" href="./transaction_index.php">
-                <i class="fas fa-times me-1"></i> Hủy
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Format tiền: tự thêm dấu . sau mỗi 3 số
+  document.addEventListener('DOMContentLoaded', function () {
+    const moneyInputs = document.querySelectorAll('.money-input');
 
-  <!--  Tự động ẩn thông báo sau 3 giây -->
-  <script>
-    setTimeout(() => {
-      const alert = document.querySelector('.alert');
-      if (alert) {
-        const bsAlert = new bootstrap.Alert(alert);
-        bsAlert.close();
-      }
-    }, 3000);
-  </script>
-</body>
-</html>
+    function formatCurrency(value) {
+      // bỏ hết ký tự không phải số
+      let v = value.replace(/\D/g, '');
+      if (!v) return '';
+      // chèn dấu . mỗi 3 số
+      return v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    moneyInputs.forEach(function (input) {
+      input.addEventListener('input', function () {
+        const cursorPos = this.selectionStart;
+        const before = this.value;
+        this.value = formatCurrency(this.value);
+
+        // cố gắng giữ vị trí con trỏ tương đối (không hoàn hảo nhưng đủ dùng)
+        const diff = this.value.length - before.length;
+        this.setSelectionRange(cursorPos + diff, cursorPos + diff);
+      });
+    });
+  });
+</script>
