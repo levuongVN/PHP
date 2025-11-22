@@ -34,7 +34,6 @@ $allCategoriesEdit  = array_merge($categories_income, $categories_expense);
       border-top-right-radius: 10px;
   }
 </style>
-
 <!-- Modal SỬA giao dịch -->
 <div class="modal fade" id="editTransactionModal" tabindex="-1"
      aria-labelledby="editTransactionModalLabel" aria-hidden="true">

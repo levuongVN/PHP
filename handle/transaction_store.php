@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -12,12 +14,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$conn   = getDbConnection();
-$userId = (int)$_SESSION['user_id'];
+$conn = getDbConnection();
+$userId = (int) $_SESSION['user_id'];
 
 // Xác định hành động: create / update / delete
 $action = $_POST['action'] ?? 'create';
-$id     = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+$id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 
 // ================== XOÁ GIAO DỊCH ==================
 if ($action === 'delete') {
@@ -27,7 +29,7 @@ if ($action === 'delete') {
         exit();
     }
 
-    $sql  = "DELETE FROM transactions WHERE id = ? AND user_id = ?";
+    $sql = "DELETE FROM transactions WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $sql);
 
     if (!$stmt) {
@@ -54,16 +56,16 @@ if ($action === 'delete') {
 // ================== CREATE / UPDATE ==================
 
 // Lấy dữ liệu từ form
-$type       = $_POST['type'] ?? 'income';
-$categoryId = (int)($_POST['category_id'] ?? 0);
+$type = $_POST['type'] ?? 'income';
+$categoryId = (int) ($_POST['category_id'] ?? 0);
 
 // Tiền: người dùng gõ "1.000.000" -> chuyển về 1000000
-$amountRaw   = $_POST['amount'] ?? '0';
+$amountRaw = $_POST['amount'] ?? '0';
 $amountClean = str_replace('.', '', $amountRaw);
-$amount      = (float)$amountClean;
+$amount = (float) $amountClean;
 
-$date      = $_POST['transaction_date'] ?? '';
-$desc      = $_POST['description'] ?? '';
+$date = $_POST['transaction_date'] ?? '';
+$desc = $_POST['description'] ?? '';
 $fromIndex = isset($_POST['from_index']) && $_POST['from_index'] == '1';
 
 // --------- VALIDATE cơ bản ---------

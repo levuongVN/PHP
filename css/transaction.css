@@ -1,142 +1,169 @@
 /* transaction.css */
 :root {
-    --primary: #4361ee;
-  }
-  
-  body {
-    background: #f5f7fb;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }  
-  .modal-header-gradient {
-    background: linear-gradient(
-        90deg,
-        rgba(42, 123, 155, 1) 0%,
-        rgba(87, 121, 199, 1) 50%,
-        rgba(237, 221, 83, 1) 100%
-    );
-    color: white;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+  --primary: #4361ee;
+  --secondary: #3f37c9;
+  --success: #4cc9f0;
+  --danger: #f72585;
+  --warning: #f8961e;
+  --info: #7209b7;
+  --light: #f8f9fa;
+  --dark: #212529;
 }
+
+body {
+  background-color: #f5f7fb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+}
+
+.header {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.modal-header-gradient {
+  background: linear-gradient(90deg,
+      rgba(42, 123, 155, 1) 0%,
+      rgba(87, 121, 199, 1) 50%,
+      rgba(237, 221, 83, 1) 100%);
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 24px 28px;
+}
+
+.card {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  background: #fff;
+}
+
+/* === STYLE MỚI CHO TREE VIEW === */
+.category-tree {
+  list-style: none;
+  padding-left: 0;
+}
+
+.category-tree .category-tree {
+  padding-left: 2rem;
+  margin-top: 0.5rem;
+}
+
+.category-item {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.category-header {
+  padding: 1rem 1.25rem;
+  background: #f8f9fa;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.category-header:hover {
+  background: #e9ecef;
+}
+
+.category-header[aria-expanded="true"] {
+  background: var(--primary);
+  color: white;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.category-header[aria-expanded="true"] .category-badge {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.category-header[aria-expanded="true"] .amount-income,
+.category-header[aria-expanded="true"] .amount-expense,
+.category-header[aria-expanded="true"] .count-transactions {
+  color: white !important;
+}
+
+.transactions-list {
+  padding: 1rem;
+  background: #fafbfc;
+  border-radius: 0 0 8px 8px;
+}
+
+.transaction-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.transaction-row:last-child {
+  border-bottom: none;
+}
+
+.amount-income {
+  color: #18794e;
+  font-weight: 600;
+}
+
+.amount-expense {
+  color: #c92a2a;
+  font-weight: 600;
+}
+
+.category-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 0.9rem;
+}
+
+.category-income {
+  background: #e9f8ef;
+  color: #18794e;
+}
+
+.category-expense {
+  background: #fff1f3;
+  color: #c92a2a;
+}
+
+.summary-card {
+  border-radius: 14px;
+  border: none;
+  transition: transform 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
   .main-content {
-    margin-left: 250px;
-    padding: 24px 28px;
+    margin-left: 0;
   }
-  
-  .card {
-    border: 1px solid #eee;
-    border-radius: 14px;
-    background: #fff;
-  }
-  
-  /* === STYLE MỚI CHO TREE VIEW === */
-  .category-tree {
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .category-tree .category-tree {
-    padding-left: 2rem;
-    margin-top: 0.5rem;
-  }
-  
-  .category-item {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .category-header {
-    padding: 1rem 1.25rem;
-    background: #f8f9fa;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-  
-  .category-header:hover {
-    background: #e9ecef;
-  }
-  
-  .category-header[aria-expanded="true"] {
-    background: var(--primary);
-    color: white;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  
-  .category-header[aria-expanded="true"] .category-badge {
-    background: rgba(255,255,255,0.2) !important;
-    color: white !important;
-  }
-  
-  .category-header[aria-expanded="true"] .amount-income,
-  .category-header[aria-expanded="true"] .amount-expense,
-  .category-header[aria-expanded="true"] .count-transactions {
-    color: white !important;
-  }
-  
-  .transactions-list {
-    padding: 1rem;
-    background: #fafbfc;
-    border-radius: 0 0 8px 8px;
-  }
-  
-  .transaction-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .transaction-row:last-child {
-    border-bottom: none;
-  }
-  
-  .amount-income {
-    color: #18794e;
-    font-weight: 600;
-  }
-  
-  .amount-expense {
-    color: #c92a2a;
-    font-weight: 600;
-  }
-  
-  .category-badge {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    font-size: 0.9rem;
-  }
-  
-  .category-income {
-    background: #e9f8ef;
-    color: #18794e;
-  }
-  
-  .category-expense {
-    background: #fff1f3;
-    color: #c92a2a;
-  }
-  
-  .summary-card {
-    border-radius: 14px;
-    border: none;
-    transition: transform 0.2s;
-  }
-  
-  .summary-card:hover {
-    transform: translateY(-2px);
-  }
-  
-  @media (max-width: 768px) {
-    .main-content {
-      margin-left: 0;
-    }
-  }
+}
