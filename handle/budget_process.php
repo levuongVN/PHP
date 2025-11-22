@@ -93,12 +93,12 @@ function handleCreateBudget($conn, $user_id, $categories)
     }
     if ($category_exists) {
         $createBudgetAvailable = createBudgetAvailable($conn, $user_id, $idCategory);
-        echo $createBudgetAvailable;
-        // if ($createBudgetAvailable) {
-        //     header('Location: ../views/budget/budget.php');
-        //     exit;
-        // }
-        // exit;
+        // echo $createBudgetAvailable;
+        if ($createBudgetAvailable) {
+            header('Location: ../views/budget/budget.php');
+            exit;
+        }
+        exit;
     }
 
     if ($hasError) {
