@@ -19,7 +19,7 @@ function getCategoryBudgetsAllTime($conn, $user_id)
             THEN t.amount ELSE 0 
             END), 0) as spent_amount
             FROM categories c
-            LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ?
+            LEFT JOIN budgets b ON c.id = b.category_id AND b.user_id = ? AND b.is_deleted = 0
             LEFT JOIN transactions t ON c.id = t.category_id AND t.user_id = ?
             WHERE (c.user_id = ? OR c.user_id IS NULL) AND b.category_id = c.id
             GROUP BY c.id, c.name, c.color, c.icon, b.id, b.month, b.amount
@@ -115,11 +115,24 @@ function createBudget($conn, $user_id, $nameCate, $type, $month, $amount)
         return false;
     }
 }
+function createBudgetAvailable($conn, $user_id, $cate_id){
+    try {
+        $sql = "UPDATE budgets SET is_deleted = 0 WHERE user_id = ? AND category_id = ?;";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "ii", $user_id, $cate_id);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    } catch (Exception $e) {
+        error_log("Error setting create budget available: " . $e->getMessage());
+        return false;
+    }
+}
 function deleteBudget($conn, $user_id, $cate_id)
 {
     try {
         // 1. Xóa ngân sách
-        $sql = "DELETE FROM budgets WHERE user_id = ? AND category_id = ?;";
+        $sql = "UPDATE budgets SET is_deleted = 1 WHERE user_id = ? AND category_id = ?;";
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "ii", $user_id, $cate_id);
         $result = mysqli_stmt_execute($stmt);

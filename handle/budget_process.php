@@ -81,18 +81,24 @@ function handleCreateBudget($conn, $user_id, $categories)
         $hasError = true;
     }
 
-    // Kiểm tra danh mục trùng
+    // Kiểm tra danh mục đã tồn tại
     $category_exists = false;
+    $idCategory = null;
     foreach ($categories as $category) {
         if ($category['name'] === $category_name && $category['type'] === $category_type && (date('Y-m', strtotime($category['created_at'])) == date('Y-m', strtotime($budget_date)))) {
             $category_exists = true;
+            $idCategory = $category['id'];
             break;
         }
     }
 
     if ($category_exists) {
-        $_SESSION['error_category'] = 'Danh mục đã tồn tại';
-        $hasError = true;
+        $createBudgetAvailable = createBudgetAvailable($conn, $user_id, $idCategory);
+        if ($createBudgetAvailable) {
+            header('Location: ../views/budget/budget.php');
+            exit;
+        }
+        exit;
     }
 
     if ($hasError) {
@@ -105,7 +111,7 @@ function handleCreateBudget($conn, $user_id, $categories)
         exit;
     }
 
-    // Nếu không có lỗi, tiến hành tạo budget
+    // Nếu không có lỗi và k có cate trong category sẽ auto thêm và tiến hành tạo budget
     $result = createBudget($conn, $user_id, $category_name, $category_type, $month, $budget_amount_numeric);
     if ($result) {
         unset($_SESSION['old_category']);
@@ -124,13 +130,12 @@ function handleDeleteBudget($conn, $user_id)
 {
     $budget_id = $_POST['delete_budget_id'] ?? 0;
     $cate_id = $_POST['delete_cate_id'] ?? 0;
-
     if ($budget_id <= 0) {
         $_SESSION['error_delete_budget'] = 'ID ngân sách không hợp lệ.';
         header('Location: ../views/budget/budget.php');
         exit;
     } else {
-        $result = deleteBudget($conn, $budget_id, $cate_id);
+        $result = deleteBudget($conn, $user_id, $cate_id);
         if ($result) {
             unset($_SESSION['error_delete_budget']);
         } else {
