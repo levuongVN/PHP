@@ -100,8 +100,4 @@ function registerUser($conn, $username,$email, $password, $full_name)
         return ['success' => false, 'message' => 'Lỗi khi đăng ký: ' . mysqli_error($conn)];
     }
 }
-
-
-
-
 ?>

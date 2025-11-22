@@ -21,7 +21,6 @@ $login_time = $_SESSION['login_time'];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Giữ nguyên toàn bộ CSS cũ */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
@@ -270,7 +269,6 @@ $login_time = $_SESSION['login_time'];
         }
     </style>
 </head>
-
 <body>
     <?php include '../sideBar.php'; ?>
     <div class="container-fluid">

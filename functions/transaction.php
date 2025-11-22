@@ -104,6 +104,7 @@ function transaction_add(
 function transaction_get_all(mysqli $conn, int $userId): array {
     $sql = "SELECT 
                 t.id,
+                t.category_id,   
                 t.transaction_date,
                 t.amount,
                 t.description,

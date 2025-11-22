@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Thông báo thành công
 
         $pdo = getDBConnection();
-        $result = register($pdo, $username, $email, $password, $full_name);
+        $result = registerUser($pdo, $username, $email, $password, $full_name);
         $_SESSION['success'] = "Đăng ký thành công! Vui lòng đăng nhập.";
         header('Location: ../Index.php');
         exit();

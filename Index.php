@@ -272,7 +272,7 @@ if (isset($_SESSION['error'])) {
                         <div class="mt-4 p-3 demo-info">
                             <small class="text-muted">
                                 <i class="fas fa-info-circle me-1"></i>
-                                <strong>Tài khoản demo:</strong> demo / 123456
+                                <strong>Thông tin liên hệ:</strong> leVanVướng@gmail.com
                             </small>
                         </div>
                     </div>
