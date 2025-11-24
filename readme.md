@@ -128,8 +128,12 @@ Truy cập hệ thống:
 Sau khi đăng nhập có thể:
 
 Xem hồ sơ cá nhân 
+
 Xem thống kê và báo cáo
+
 Tạo nhắc nhở và nhận lời nhắc khi vượt ngưỡng cảnh báo
+
 Quản lí giao dịch, ngân sách
     
+
 
