@@ -6,11 +6,10 @@
 <h2 align="center">
     Youth Union Member Management
 </h2>
-<div align="center">
-    <p align="center">
-        <img src="docs/logo/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
-        <img src="docs/logo/fitdnu_logo.png" alt="AIoTLab Logo" width="180"/>
-        <img src="docs/logo/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
+  <p align="center">
+        <img src="/Users/ngocanh/logo/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
+        <img src="/Users/ngocanh/logo/dnu_logo.png" alt="AIoTLab Logo" width="180"/>
+        <img src="/Users/ngocanh/logo/fitdnu_logo.png" alt="DaiNam University Logo" width="200"/>
     </p>
 
 [![AIoTLab](https://img.shields.io/badge/AIoTLab-green?style=for-the-badge)](https://www.facebook.com/DNUAIoTLab)
@@ -135,5 +134,6 @@ Tạo nhắc nhở và nhận lời nhắc khi vượt ngưỡng cảnh báo
 
 Quản lí giao dịch, ngân sách
     
+
 
 
