@@ -54,7 +54,6 @@ if (isset($_SESSION['error'])) {
                                     <input type="password" id="password" name="password" class="form-control"
                                         placeholder="Nhập mật khẩu">
                                 </div>
-                                <div id="passwordError" class="error"></div>
                             </div>
 
                             <!-- Error Message -->

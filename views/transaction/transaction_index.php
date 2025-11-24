@@ -95,36 +95,35 @@ $currentBalance = $totalIncome - $totalExpense;
 <body style="background: <?= $theme ?>">
   <?php include '../sideBar.php'; ?>
   <div class="main-content">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="m-0 <?= $theme == "#495057" ? "text-light" : "" ?>">Tổng quan giao dịch theo danh mục</h4>
-      <div class="d-flex align-items-center ms-auto">
+    <!-- Header -->
+    <div class="header d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-0">Quản lí giao dịch</h2>
+        <p class="text-muted mb-0">Tổng quan giao dịch theo danh mục</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <!-- Nút Thêm Nhắc Nhở Mới -->
+        <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
+          <i class="fas fa-plus me-1"></i> Thêm giao dịch
+        </button>
         <div class="dropdown">
           <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-            <img src="https://ui-avatars.com/api/?name=<?= urlencode($full_name) ?>&background=4361ee&color=fff"
+            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=4361ee&color=fff"
               class="user-avatar me-2">
             <span><?php echo htmlspecialchars($full_name); ?></span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end">
+          <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="../profile/profile.php"><i class="fas fa-user me-2"></i> Hồ sơ</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li>
-              <a class="dropdown-item" href="../handle/logout_process.php">
-                <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
-              </a>
-            </li>
+            <li><a class="dropdown-item" href="../../handle/logout_process.php"><i class="fas fa-sign-out-alt me-2"></i>
+                Đăng xuất</a></li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="col-12 d-flex mb-4">
-  <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#createTransactionModal">
-    <i class="fas fa-plus me-1"></i> Thêm giao dịch
-  </button>
-</div>
-
+    
     <!-- Summary -->
     <div class="row mb-4">
       <div class="col-md-3 mb-3">
